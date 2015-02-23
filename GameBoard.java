@@ -17,9 +17,9 @@ public class GameBoard extends JFrame {
     JTextArea console = new JTextArea();
     private int xShift;
     private int yShift;
-    final Dimension paneSize = new Dimension(1000, 1000);
-    final Dimension boardSize = new Dimension(800,800);
-    final Dimension textAreaSize = new Dimension(400,400);
+    final Dimension paneSize = new Dimension(800, 800);
+    final Dimension boardSize = new Dimension(600,600);
+    final Dimension textAreaSize = new Dimension(200,200);
     
 //    GameBoard constructor
     public GameBoard() {

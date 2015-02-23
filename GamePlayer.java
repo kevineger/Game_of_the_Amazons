@@ -102,15 +102,34 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 		return true;
 	}
 
-    // You may want to implement a method like this as a central point for sending messages 
-	// to the server.  
-	public void sendToServer(String msgType, int roomID){
-	  // before sending the message to the server, you need to (1) build the text of the message 
-	  // as a string,  (2) compile the message by calling 
-	  // the static method ServerMessage.compileGameMessage(msgType, roomID, actionMsg),
-	  // and (3) call the method gameClient.sendToServer() to send the compiled message.
-		
-	  // For message types and message format, see the GameMessage API and the project notes	
 
+	/*
+	 * Method that sends messages (chat or movement)
+	 */
+	public void sendToServer(String msgType, int roomID){
+		String actionMsg = "<action type='";
+		actionMsg += msgType + "'>";
+		Scanner in = new Scanner(System.in);
+		
+		if (msgType == "move") {						// If the action is a move type, asks for info on move of queen and arrow
+			actionMsg += "<queen move='";
+			System.out.println("Move from where to where? (in form start-end: ");
+			String move = in.nextLine();
+			actionMsg += move + "'></queen><arrow move='";
+			
+			System.out.println("Throw arrow to where?: ");
+			String arrow = in.nextLine();
+			actionMsg += arrow + "'></arrow>";
+			
+		}
+		else if (msgType == "chat") {				// If action is chat, ask for input of chat message
+			System.out.println("Chat:  ");
+			String message = in.nextLine();
+			actionMsg += message;			
+		}
+		actionMsg += "</action>";
+		System.out.println("Message that is going : "+actionMsg);
+		String msg = ServerMessage.compileGameMessage(GameMessage.MSG_GAME, roomID, actionMsg);		// GET ID OF ROOM
+		gameClient.sendToServer(msg, true);
 	}
 }

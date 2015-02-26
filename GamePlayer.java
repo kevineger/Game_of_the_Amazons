@@ -19,7 +19,7 @@ import ubco.ai.games.GameMessage;
 public class GamePlayer implements ubco.ai.games.GamePlayer {
 
 	GameClient gameClient = null; 
-	GameBoard frame = null;
+	
 	
 	/*
 	 * Constructor 
@@ -29,12 +29,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 		//A player has to maintain an instance of GameClient, and register itself with the  
 		//GameClient. Whenever there is a message from the server, the Gameclient will invoke 
 		//the player's handleMessage() method.
-		
-		frame = new GameBoard();
-    	frame.pack();
-    	frame.setResizable(true);
-    	frame.setLocationRelativeTo( null );
-    	frame.setVisible(true);
+		BoardLogic bl = new BoardLogic(true);
 		
 		//Three arguments: user name (any), passwd (any), this (delegate)   
 	    gameClient = new GameClient(name, passwd, this);

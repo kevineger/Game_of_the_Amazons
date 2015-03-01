@@ -7,8 +7,7 @@ public class moveData {
 	int colPos;
 	int rowPos;
 	GamePiece Q;
-	
-	
+
 	/**
 	 * creates and xy position object in terms of row/column position
 	 * @param x column position of a piece

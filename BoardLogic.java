@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -20,6 +21,8 @@ import java.util.ArrayList;
  *
  */
 public class BoardLogic {
+
+    private boolean enemyHasMove;
 	private GamePiece[][] board;
 	private  Queen[] enemies;
 	private  Queen[] friendly;
@@ -67,7 +70,7 @@ public class BoardLogic {
 			friendly = new Queen[] { (Queen) board[0][3], (Queen) board[0][6], (Queen) board[3][0], (Queen) board[3][9] };
 			enemies = new Queen[] { (Queen) board[6][0], (Queen) board[6][9], (Queen) board[9][3],	(Queen) board[9][6] };
 		}
-		
+
 //		Start GUI
 		frame = new GameBoard(friendly, enemies);
     	frame.pack();
@@ -75,6 +78,7 @@ public class BoardLogic {
     	frame.setLocationRelativeTo( null );
     	frame.setVisible(true);
 
+        setEnemyHasMove();
         arrows = new ArrayList<>();
         legalArrowShots = new ArrayList<>();
 		legalQueenMoves = new ArrayList<>();
@@ -98,7 +102,7 @@ public class BoardLogic {
         frame.setLocationRelativeTo( null );
         frame.setVisible(true);
 
-
+        setEnemyHasMove();
         legalArrowShots = new ArrayList<moveData>();
 		legalQueenMoves = new ArrayList<moveData>();
 		updateLegalQueenMoves();
@@ -111,6 +115,7 @@ public class BoardLogic {
      * @param arrow stone positions
      */
     protected BoardLogic(Queen[] enemies, Queen[] friendly, ArrayList<Arrow> arrow){
+        setEnemyHasMove();
         this.enemies = enemies;
         this.friendly = friendly;
         this.arrows = arrow;
@@ -141,79 +146,127 @@ public class BoardLogic {
 	 * @return list of legal moves of piece G
 	 */
 	private ArrayList<moveData> isLegalMove(GamePiece G) {
-		// array list of positions to be returned
-		ArrayList<moveData> legal = new ArrayList<moveData>();
+        // array list of positions to be returned
+        ArrayList<moveData> legal = new ArrayList<moveData>();
 
-		// starting position to check axis' if legal move
-		int startRow = G.getRowPos();
-		int startCol = G.getColumnPos();
+        // starting position to check axis' if legal move
+        int startRow = G.getRowPos();
+        int startCol = G.getColumnPos();
 
-		// get all legal moves from queen position going upwards
-		for (int i = 1; startRow - i >= 0; i++) {
-			if (board[startRow - i][startCol] == null)
-				legal.add(new moveData(startRow - i, startCol, G));
-			else
-				break;
-		}
+        // get all legal moves from queen position going upwards
+        for (int i = 1; startRow - i >= 0; i++) {
+            if (board[startRow - i][startCol] == null)
+                legal.add(new moveData(startRow - i, startCol, G));
+            else
+                break;
+        }
 
-		// get all legal moves from queen position going downwards
-		for (int i = 1; startRow + i <= 9; i++) {
-			if (board[startRow + i][startCol] == null)
-				legal.add(new moveData(startCol, startRow + i, G));
-			else
-				break;
-		}
+        // get all legal moves from queen position going downwards
+        for (int i = 1; startRow + i <= 9; i++) {
+            if (board[startRow + i][startCol] == null)
+                legal.add(new moveData(startCol, startRow + i, G));
+            else
+                break;
+        }
 
-		//getting all legal moves to the right of the queen
-		for (int i = 1; startCol + i <= 9; i++) {
-			if (board[startRow][startCol+i] == null)
-				legal.add(new moveData(startCol + i, startRow, G));
-			else
-				break;
-		}
+        //getting all legal moves to the right of the queen
+        for (int i = 1; startCol + i <= 9; i++) {
+            if (board[startRow][startCol+i] == null)
+                legal.add(new moveData(startCol + i, startRow, G));
+            else
+                break;
+        }
 
-		//getting all legal moves to the right of the queen
-		for (int i = 1; startCol - i >= 0; i++) {
-			if (board[startRow][startCol-i] == null)
-				legal.add(new moveData(startCol - i, startRow, G));
-			else
-				break;
-		}
+        //getting all legal moves to the right of the queen
+        for (int i = 1; startCol - i >= 0; i++) {
+            if (board[startRow][startCol-i] == null)
+                legal.add(new moveData(startCol - i, startRow, G));
+            else
+                break;
+        }
 
-		//get all legal moves down and to the right(diagonal) of the queen
-		for (int i = 1; (startCol + i <= 9) && (startRow + i <= 9); i++) {
-			if (board[startRow+i][startCol+i] == null){
-				legal.add(new moveData(startCol + i, startRow + i, G));
-			}else
-				break;
-		}
+        //get all legal moves down and to the right(diagonal) of the queen
+        for (int i = 1; (startCol + i <= 9) && (startRow + i <= 9); i++) {
+            if (board[startRow+i][startCol+i] == null){
+                legal.add(new moveData(startCol + i, startRow + i, G));
+            }else
+                break;
+        }
 
-		//get all legal moves up and to the right(diagonal) of the queen
-		for (int i = 1; (startRow - i >= 0) && (startCol + i <= 9); i++) {
-			if (board[startRow - i][startCol+i] == null){
-				legal.add(new moveData(startCol + i, startRow - i, G));
-			}else
-				break;
-		}
+        //get all legal moves up and to the right(diagonal) of the queen
+        for (int i = 1; (startRow - i >= 0) && (startCol + i <= 9); i++) {
+            if (board[startRow - i][startCol+i] == null){
+                legal.add(new moveData(startCol + i, startRow - i, G));
+            }else
+                break;
+        }
 
-		//get all legal moves down and to the left(diagonal) of queen
-		for (int i = 1; (startRow + i <= 9) && (startCol - i >= 0); i++) {
-			if (board[startRow + i][startCol - i] == null){
-				legal.add(new moveData(startCol - i, startRow + i, G));
-			}else
-				break;
-		}
+        //get all legal moves down and to the left(diagonal) of queen
+        for (int i = 1; (startRow + i <= 9) && (startCol - i >= 0); i++) {
+            if (board[startRow + i][startCol - i] == null){
+                legal.add(new moveData(startCol - i, startRow + i, G));
+            }else
+                break;
+        }
 
-		//get all legal moves up and to the left(diagonal) of queen
-		for (int i = 1; (startRow - i >= 0) && (startCol - i >= 0); i++) {
-			if (board[startRow - i][startCol - i] == null){
-				legal.add(new moveData(startCol - i, startRow - i, G));
-			}else
-				break;
-		}
+        //get all legal moves up and to the left(diagonal) of queen
+        for (int i = 1; (startRow - i >= 0) && (startCol - i >= 0); i++) {
+            if (board[startRow - i][startCol - i] == null){
+                legal.add(new moveData(startCol - i, startRow - i, G));
+            }else
+                break;
+        }
 
-		return legal;
-	}
+        return legal;
+    }
+
+    /**
+     * checks to see if enemy has any queen moves on the board
+     */
+    private void setEnemyHasMove(){
+        for (Queen q: enemies){
+            int startRow = q.getRowPos();
+            int startCol = q.getColumnPos();
+
+            if(startRow - 1 >= 0 & board[startRow - 1][startCol] == null){
+                enemyHasMove = true;
+                break;
+            }
+
+            if(startRow + 1 <= 9 & board[startRow + 1][startCol] == null){
+                enemyHasMove = true;
+                break;
+            }
+
+            if(startCol - 1 >= 0 & board[startRow][startCol - 1] == null){
+                enemyHasMove = true;
+                break;
+            }
+            if(startCol + 1 <= 9 & board[startRow][startCol + 1] == null){
+                enemyHasMove = true;
+                break;
+            }
+
+            if((startRow - 1 >= 0 && startCol - 1 >= 0) & board[startRow - 1][startCol - 1] == null){
+                enemyHasMove = true;
+                break;
+            }
+
+            if((startRow + 1 <= 9 && startCol - 1 >= 0) & board[startRow + 1][startCol - 1] == null){
+                enemyHasMove = true;
+                break;
+            }
+
+            if((startRow + 1 <= 9 && startCol + 1 <= 9) & board[startRow + 1][startCol + 1] == null){
+                enemyHasMove = true;
+                break;
+            }
+            if((startRow - 1 >= 0 && startCol + 1 <= 9) & board[startRow - 1][startCol + 1] == null){
+                enemyHasMove = true;
+                break;
+            }
+        }
+    }
 
 	/**
 	 * returns list of all legal moves available for every piece
@@ -312,6 +365,19 @@ public class BoardLogic {
             }
         }
     }
+
+    /**
+     *
+     * @return true == someone won
+     * @return false == still playing
+     */
+    protected boolean goalTest(){
+        if(enemyHasMove == false || legalQueenMoves.size() == 0)
+            return true;
+        else
+            return false;
+    }
+
 
 	@Override
     public String toString(){

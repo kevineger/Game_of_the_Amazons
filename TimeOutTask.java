@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import java.util.TimerTask;
 /**
  * class that will run a task when the timer reaches its time

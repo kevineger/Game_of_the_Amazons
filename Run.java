@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import ubco.ai.games.Amazon;
 
 import java.util.ArrayList;

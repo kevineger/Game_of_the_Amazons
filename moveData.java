@@ -1,9 +1,9 @@
 /**
- * helper object to create a list of XYPositions 
+ * helper object to create a list of move data
  * @author TCulos
  *
  */
-public class XYPosition {
+public class moveData {
 	int colPos;
 	int rowPos;
 	GamePiece Q;
@@ -14,7 +14,7 @@ public class XYPosition {
 	 * @param x column position of a piece
 	 * @param y row position of a piece
 	 */
-	public XYPosition(int x, int y, GamePiece Q){
+	public moveData(int x, int y, GamePiece Q){
 		colPos = x;
 		rowPos= y;
 		this.Q = Q;

@@ -83,12 +83,6 @@ public class GameBoard extends JFrame {
         getContentPane().add(Pane);
     	
     }
-    
-    public void mousePressed(MouseEvent e)
-    {
-        System.out.println("Clicked");
-    }
-
 
     public void write(String message){
         console.append(message);

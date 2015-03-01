@@ -5,8 +5,8 @@
  */
 public class GamePiece {
 	//all possible pieces that will be on the board
-	private int rowPos;
-	private int colPos;
+	protected int rowPos;
+	protected int colPos;
 	
 	/**
 	 * sets our pieces
@@ -31,9 +31,11 @@ public class GamePiece {
 	public int getRowPos(){
 		return rowPos;
 	}
-	
+
+    /**
+     *used to draw game board
+     */
 	public int getConcatPos() {
-		System.out.println(Integer.parseInt(Integer.toString(colPos) + Integer.toString(rowPos)));
 		return Integer.parseInt(Integer.toString(colPos) + Integer.toString(rowPos));
 	}
 }

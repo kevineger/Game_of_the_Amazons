@@ -1,17 +1,12 @@
 import java.util.ArrayList;
 
-
-
 /**
- * KNOWN PROBLEMS:	1) for legal shots it holds all shots possible not just the ones for the piece we moved
- * 					2) not sure whether to hold legal shots list in GamePiece or not(I think probably)
- * 					3) When we move a queen does that queen have to shoot? or can any?
- * 					4) ...
+ * KNOWN PROBLEMS:	1) ...
+ *
  * 
- * WANT TO ADD:		1) method to move a queen given its legal move(XYPosition object holds which queen )
- * 					2) method to keep track of moves available to our opponent(want to use this in a heuristic
+ * WANT TO ADD:		1) method to keep track of moves available to our opponent(want to use this in a heuristic
  * 					   where we weigh a move based on how many moves it gives us VS. restricts their moves)
- * 					3) ...
+ * 					2) ...
  */
 
 /**
@@ -19,24 +14,25 @@ import java.util.ArrayList;
  * played includes helper methods for state-space search as well as helper data
  * structures for searching for the enemy/yourself
  * 
- * GameBoard is made of GamePieces, null if open position
+ * boardLogic is made of GamePieces, null if open position on board
  * 
  * @author TCulos
  *
  */
 public class BoardLogic {
 	private GamePiece[][] board;
-	private static Queen[] enemies;						// variables are declared as static here so that when we update
-	private static Queen[] friendly;					// the legal moves or a queen is moved we don't have a method call for
-	private static ArrayList<XYPosition> legalArrowShots;	// that outside this class its all called whenever an action occurs
-	private static ArrayList<XYPosition> legalQueenMoves;	// PS: legal move lists created on instantiation
+	private  Queen[] enemies;
+	private  Queen[] friendly;
+    private  ArrayList<Arrow> arrows;
+	private  ArrayList<moveData> legalArrowShots;
+	private  ArrayList<moveData> legalQueenMoves;
 
 	GameBoard frame = null;
 	/**
 	 * creates a board depending on whether we are the starting player or not
 	 * with top left corner being coordinate (0,0) and bottom right (9,9)
 	 * 
-	 * @param starttrue if we are first to move
+	 * @param start true if we are first to move
 	 */
 	protected BoardLogic(boolean start) {
 		if (start) {
@@ -79,10 +75,10 @@ public class BoardLogic {
     	frame.setLocationRelativeTo( null );
     	frame.setVisible(true);
 
-		legalArrowShots = new ArrayList<XYPosition>();
-		legalQueenMoves = new ArrayList<XYPosition>();
+        arrows = new ArrayList<>();
+        legalArrowShots = new ArrayList<>();
+		legalQueenMoves = new ArrayList<>();
 		updateLegalQueenMoves();
-		updateLegalArrowShots();
 
 	}
 
@@ -95,11 +91,30 @@ public class BoardLogic {
 	protected BoardLogic(GamePiece[][] newBoard) {
 		this.board = newBoard;
 
-		legalArrowShots = new ArrayList<XYPosition>();
-		legalQueenMoves = new ArrayList<XYPosition>();
+//      Start GUI
+        frame = new GameBoard(friendly, enemies);
+        frame.pack();
+        frame.setResizable(false);
+        frame.setLocationRelativeTo( null );
+        frame.setVisible(true);
+
+
+        legalArrowShots = new ArrayList<moveData>();
+		legalQueenMoves = new ArrayList<moveData>();
 		updateLegalQueenMoves();
-		updateLegalArrowShots();
 	}
+
+    /**
+     * constructor takes board pieces and builds logic for it
+     * @param enemies opponent queen positions
+     * @param friendly our queen positions
+     * @param arrow stone positions
+     */
+    protected BoardLogic(Queen[] enemies, Queen[] friendly, ArrayList<Arrow> arrow){
+        this.enemies = enemies;
+        this.friendly = friendly;
+        this.arrows = arrow;
+    }
 
 	/**
 	 * returns the list of all opponent pieces on the board
@@ -120,14 +135,14 @@ public class BoardLogic {
 	}
 
 	/**
-	 * returns a list of XYPosition objects of legal moves for a given gamePiece G
+	 * returns a list of legal move information objects of legal moves for a given gamePiece G
 	 * 
 	 * @param G GamePiece to inspect
 	 * @return list of legal moves of piece G
 	 */
-	private ArrayList<XYPosition> isLegalMove(GamePiece G) {
+	private ArrayList<moveData> isLegalMove(GamePiece G) {
 		// array list of positions to be returned
-		ArrayList<XYPosition> legal = new ArrayList<XYPosition>();
+		ArrayList<moveData> legal = new ArrayList<moveData>();
 
 		// starting position to check axis' if legal move
 		int startRow = G.getRowPos();
@@ -136,7 +151,7 @@ public class BoardLogic {
 		// get all legal moves from queen position going upwards
 		for (int i = 1; startRow - i >= 0; i++) {
 			if (board[startRow - i][startCol] == null)
-				legal.add(new XYPosition(startRow - i, startCol, G));
+				legal.add(new moveData(startRow - i, startCol, G));
 			else
 				break;
 		}
@@ -144,7 +159,7 @@ public class BoardLogic {
 		// get all legal moves from queen position going downwards
 		for (int i = 1; startRow + i <= 9; i++) {
 			if (board[startRow + i][startCol] == null)
-				legal.add(new XYPosition(startCol, startRow + i, G));
+				legal.add(new moveData(startCol, startRow + i, G));
 			else
 				break;
 		}
@@ -152,7 +167,7 @@ public class BoardLogic {
 		//getting all legal moves to the right of the queen
 		for (int i = 1; startCol + i <= 9; i++) {
 			if (board[startRow][startCol+i] == null)
-				legal.add(new XYPosition(startCol + i, startRow, G));
+				legal.add(new moveData(startCol + i, startRow, G));
 			else
 				break;
 		}
@@ -160,7 +175,7 @@ public class BoardLogic {
 		//getting all legal moves to the right of the queen
 		for (int i = 1; startCol - i >= 0; i++) {
 			if (board[startRow][startCol-i] == null)
-				legal.add(new XYPosition(startCol - i, startRow, G));
+				legal.add(new moveData(startCol - i, startRow, G));
 			else
 				break;
 		}
@@ -168,7 +183,7 @@ public class BoardLogic {
 		//get all legal moves down and to the right(diagonal) of the queen
 		for (int i = 1; (startCol + i <= 9) && (startRow + i <= 9); i++) {
 			if (board[startRow+i][startCol+i] == null){
-				legal.add(new XYPosition(startCol + i, startRow + i, G));
+				legal.add(new moveData(startCol + i, startRow + i, G));
 			}else
 				break;
 		}
@@ -176,7 +191,7 @@ public class BoardLogic {
 		//get all legal moves up and to the right(diagonal) of the queen
 		for (int i = 1; (startRow - i >= 0) && (startCol + i <= 9); i++) {
 			if (board[startRow - i][startCol+i] == null){
-				legal.add(new XYPosition(startCol + i, startRow - i, G));
+				legal.add(new moveData(startCol + i, startRow - i, G));
 			}else
 				break;
 		}
@@ -184,7 +199,7 @@ public class BoardLogic {
 		//get all legal moves down and to the left(diagonal) of queen
 		for (int i = 1; (startRow + i <= 9) && (startCol - i >= 0); i++) {
 			if (board[startRow + i][startCol - i] == null){
-				legal.add(new XYPosition(startCol - i, startRow + i, G));
+				legal.add(new moveData(startCol - i, startRow + i, G));
 			}else
 				break;
 		}
@@ -192,7 +207,7 @@ public class BoardLogic {
 		//get all legal moves up and to the left(diagonal) of queen
 		for (int i = 1; (startRow - i >= 0) && (startCol - i >= 0); i++) {
 			if (board[startRow - i][startCol - i] == null){
-				legal.add(new XYPosition(startCol - i, startRow - i, G));
+				legal.add(new moveData(startCol - i, startRow - i, G));
 			}else
 				break;
 		}
@@ -204,7 +219,7 @@ public class BoardLogic {
 	 * returns list of all legal moves available for every piece
 	 * @return ArrayList<XYPosition> of all moves available
 	 */
-	protected  ArrayList<XYPosition> getLegalQueenMoves(){
+	protected  ArrayList<moveData> getLegalQueenMoves(){
 		return legalQueenMoves;
 	}
 
@@ -212,7 +227,7 @@ public class BoardLogic {
 	 * returns list of all legal moves available for every piece
 	 * @return ArrayList<XYPosition> of all moves available
 	 */
-	protected  ArrayList<XYPosition> getLegalArrowShots(){
+	protected  ArrayList<moveData> getLegalArrowShots(){
 		return legalArrowShots;
 	}
 
@@ -220,7 +235,8 @@ public class BoardLogic {
 	 * method used to update where we can shoot after an amazon is moved or arrow shot
 	 */
 	private void updateLegalArrowShots(){
-		legalArrowShots.clear();
+        if(legalArrowShots != null)
+		    legalArrowShots.clear();
 		for(GamePiece G : friendly){
 			legalArrowShots.addAll(isLegalMove(G));
 		}
@@ -236,24 +252,69 @@ public class BoardLogic {
 		}
 	}
 
-	/**
-	 * adds an arrow to the board
-	 * @param columPos 
-	 * @param rowPos
-	 * @return boolean true if position null, false otherwise
-	 */
-//	protected boolean shootArrow(int columPos, int rowPos){
-//		if(board[rowPos][columPos] == null){
-//			board[rowPos][columPos] = new GamePiece(columPos, rowPos, false, true);
-//			updateLegalQueenMoves();
-//			updateLegalArrowShots();
-//			return true;
-//		}else{
-//			System.out.println("Not a legal move");
-//			return false;}
-//	}
+    /**
+     * adds an arrow to the board and updates board
+     * @param a arrow to be added
+     */
+    protected void addArrow(Arrow a){
+        arrows.add(a);
+        updateAfterMove();
+    }
 
-	public String toString(){
+    /**
+     * adds an arrow to the board at the given position
+     * and then updates the board
+     * @param x co-ordinate
+     * @param y co-ordinate
+     */
+    protected void addArrow(int x, int y){
+        arrows.add(new Arrow(x,y));
+        updateAfterMove();
+    }
+
+    /**
+     * after a move is done updates the board (action being queen move + arrow Shot)
+     */
+    protected void updateAfterMove(){
+        this.clearBoard();
+
+        //reseting each friendly queen
+        for (Queen q : friendly) {
+            board[q.getRowPos()][q.getColumnPos()] = q;
+        }
+
+        //reseting each enemy queen
+        for(Queen q : enemies){
+            board[q.getRowPos()][q.getColumnPos()] = q;
+        }
+
+        //reseting each arrow
+        for(Arrow a : arrows){
+            board[a.getRowPos()][a.getColumnPos()] = a;
+        }
+
+        //re-making GUI
+        frame = new GameBoard(friendly, enemies);
+        frame.pack();
+        frame.setResizable(false);
+        frame.setLocationRelativeTo( null );
+        frame.setVisible(true);
+
+    }
+
+    /**
+     * makes all positions on a board null so positions can be updated
+     */
+    private void clearBoard(){
+        for (int i = 0; i <= 9 ; i++) {
+            for (int j = 0; j <= 9 ; j++) {
+                board[i][j] = null;
+            }
+        }
+    }
+
+	@Override
+    public String toString(){
 		String str = "Current board:\n";
 		if(board != null){
 			for(int i = 0; i <= 9; i++){

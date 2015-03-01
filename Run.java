@@ -6,8 +6,7 @@ import java.util.ArrayList;
 public class Run {
     public static void main(String[] args) {
         GamePlayer gp = new GamePlayer("", "");
-    	System.out.println("List of Rooms:"+gp.getRooms());
-    	gp.joinRoom();
+//    	gp.joinRoom();
 
 //        ArrayList<moveData> moves = gp.bl.getLegalQueenMoves();
 //        Queen toMove = (Queen) moves.get(0).Q;

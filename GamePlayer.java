@@ -19,7 +19,6 @@ import ubco.ai.games.GameMessage;
 public class GamePlayer implements ubco.ai.games.GamePlayer {
 
     GameClient gameClient = null;
-    GameBoard frame = null;
     BoardLogic bl;
 
     /*
@@ -34,6 +33,11 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 
         //Three arguments: user name (any), passwd (any), this (delegate)
         gameClient = new GameClient(name, passwd, this);
+        System.out.printf(getRooms());
+        joinRoom();
+
+        SuccessorFunction sf = new SuccessorFunction();
+        sf.getSuccessors(bl);
     }
 
     //	Gets room list

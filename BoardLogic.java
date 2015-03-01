@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class BoardLogic {
 
     private boolean enemyHasMove;
-	private GamePiece[][] board;
+	private GamePiece[][] board = new GamePiece[10][10];
 	private  Queen[] enemies;
 	private  Queen[] friendly;
     private  ArrayList<Arrow> arrows;
@@ -78,12 +78,10 @@ public class BoardLogic {
     	frame.setLocationRelativeTo( null );
     	frame.setVisible(true);
 
-        setEnemyHasMove();
         arrows = new ArrayList<>();
         legalArrowShots = new ArrayList<>();
 		legalQueenMoves = new ArrayList<>();
 		updateLegalQueenMoves();
-
 	}
 
 	/**
@@ -102,7 +100,6 @@ public class BoardLogic {
         frame.setLocationRelativeTo( null );
         frame.setVisible(true);
 
-        setEnemyHasMove();
         legalArrowShots = new ArrayList<moveData>();
 		legalQueenMoves = new ArrayList<moveData>();
 		updateLegalQueenMoves();
@@ -115,10 +112,10 @@ public class BoardLogic {
      * @param arrow stone positions
      */
     protected BoardLogic(Queen[] enemies, Queen[] friendly, ArrayList<Arrow> arrow){
-        setEnemyHasMove();
         this.enemies = enemies;
         this.friendly = friendly;
         this.arrows = arrow;
+        updateAfterMove();
     }
 
 	/**
@@ -152,11 +149,18 @@ public class BoardLogic {
             newFriendly[i]=friendly[i];
             newEnemies[i]=enemies[i];
         }
-        for(Arrow a : arrows) {
-            newArrows.add(a);
+        if(arrows!=null) {
+            for(Arrow a : arrows) {
+                newArrows.add(a);
+            }
         }
+
+        System.out.printf("Enemies: "+newEnemies.length+"\nFriendlies: "+newFriendly.length+"\nArrows: "+newArrows.size()+"\n");
         BoardLogic newBoard = new BoardLogic(newEnemies, newFriendly, newArrows);
         return newBoard;
+    }
+    protected ArrayList<moveData> getArrowShots(GamePiece G) {
+        return getQueenMoves(G);
     }
 
 	/**
@@ -243,7 +247,8 @@ public class BoardLogic {
      * checks to see if enemy has any queen moves on the board
      */
     private void setEnemyHasMove(){
-        for (Queen q: enemies){
+        System.out.println("BL Enemies: " + enemies.length);
+        for (Queen q : enemies){
             int startRow = q.getRowPos();
             int startCol = q.getColumnPos();
 
@@ -366,12 +371,7 @@ public class BoardLogic {
         }
 
         //re-making GUI
-        frame = new GameBoard(friendly, enemies);
-        frame.pack();
-        frame.setResizable(false);
-        frame.setLocationRelativeTo( null );
-        frame.setVisible(true);
-
+//        frame.repaint();
     }
 
     /**

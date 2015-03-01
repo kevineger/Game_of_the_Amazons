@@ -49,10 +49,15 @@ public class GameBoard extends JFrame {
         Pane.setPreferredSize(paneSize);
 
         //Pieces
-        JLabel QueenW1 = new JLabel(new ImageIcon("./images/nicSmall.png"));
-        JLabel QueenW2 = new JLabel(new ImageIcon("./images/nicSmall.png"));
-        JLabel QueenW3 = new JLabel(new ImageIcon("./images/nicSmall.png"));
-        JLabel QueenW4 = new JLabel(new ImageIcon("./images/nicSmall.png"));
+//        JLabel QueenW1 = new JLabel(new ImageIcon("./images/nicSmall.png"));
+//        JLabel QueenW2 = new JLabel(new ImageIcon("./images/nicSmall.png"));
+//        JLabel QueenW3 = new JLabel(new ImageIcon("./images/nicSmall.png"));
+//        JLabel QueenW4 = new JLabel(new ImageIcon("./images/nicSmall.png"));
+
+        JLabel QueenW1 = new JLabel("Queen 0");
+        JLabel QueenW2 = new JLabel("Queen 1");
+        JLabel QueenW3 = new JLabel("Queen 2");
+        JLabel QueenW4 = new JLabel("Queen 3");
      
         JLabel QueenB1 = new JLabel(new ImageIcon("./images/nicSmallBlue.png"));
         JLabel QueenB2 = new JLabel(new ImageIcon("./images/nicSmallBlue.png"));

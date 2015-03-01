@@ -21,6 +21,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
     GameClient gameClient = null;
     GameBoard frame = null;
     BoardLogic bl;
+
     /*
      * Constructor
      */
@@ -50,14 +51,14 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         gameClient.joinGameRoom(in.nextLine());
 
         String msg = "";
-        msg = "<action type='"+GameMessage.MSG_CHAT+"'>"+ "Testing a chat message yo" +"</action>";
+        msg = "<action type='" + GameMessage.MSG_CHAT + "'>" + "Testing a chat message yo" + "</action>";
         String messageToSend = ServerMessage.compileGameMessage(GameMessage.MSG_CHAT, 8, msg);
         gameClient.sendToServer(messageToSend);
     }
 
     //general message from the server
     public boolean handleMessage(String msg) throws Exception {
-        System.out.println("Game message: "+msg);
+        System.out.println("Game message: " + msg);
         return true;
     }
 
@@ -67,21 +68,21 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         String xmlType = xml.getAttribute("type", null);
         System.out.println("Message Type: " + xmlType);
 
-        switch(xmlType) {
+        switch (xmlType) {
             case GameMessage.ACTION_GAME_START:
                 System.out.println("Message Type: ACTION_GAME_START");
                 //find name and associated
-                String teamName = "1";				// the GamePlayer Name (should be the same as name in Run.java) CHANGE NAME L8R
-                String teamRole="";
+                String teamName = "1";                // the GamePlayer Name (should be the same as name in Run.java) CHANGE NAME L8R
+                String teamRole = "";
 
                 IXMLElement firstChild = xml.getChildAtIndex(0);
                 IXMLElement[] grandchildren = new IXMLElement[3];
                 grandchildren[0] = firstChild.getChildAtIndex(0);
                 grandchildren[1] = firstChild.getChildAtIndex(1);
 
-                for(int i = 0; i<grandchildren.length; i++){
-                    if(grandchildren[i].getAttribute("name", null).equals(teamName)){
-                        teamRole = grandchildren[i].getAttribute("role",null);
+                for (int i = 0; i < grandchildren.length; i++) {
+                    if (grandchildren[i].getAttribute("name", null).equals(teamName)) {
+                        teamRole = grandchildren[i].getAttribute("role", null);
                         break;
                     }
                 }
@@ -90,9 +91,9 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
             case GameMessage.ACTION_MOVE:
                 System.out.println("Message Type: ACTION_MOVE");
                 IXMLElement queen = xml.getChildAtIndex(0);
-                String queen_move = queen.getAttribute("move", null);			// queen_move is the value of the opponent's move
+                String queen_move = queen.getAttribute("move", null);            // queen_move is the value of the opponent's move
                 IXMLElement arrow = xml.getChildAtIndex(1);
-                String arrow_move = arrow.getAttribute("move", null);			// arrow_move is the value of the opponent's arrow
+                String arrow_move = arrow.getAttribute("move", null);            // arrow_move is the value of the opponent's arrow
                 System.out.println("Queen Move: " + queen_move);
                 System.out.println("Arrow Move: " + arrow_move);
                 // Update the current board with the new board state
@@ -123,7 +124,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
     /*
      * Method that sends messages (movement)
      */
-    public void sendToServer(String msgType, int roomID, String queen_move, String arrow_move){
+    public void sendToServer(String msgType, int roomID, String queen_move, String arrow_move) {
         String actionMsg = "<action type='";
         actionMsg += msgType + "'>";
 
@@ -133,8 +134,8 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         actionMsg += arrow_move + "'></arrow>";
         actionMsg += "</action>";
 
-        System.out.println("Message that is going : "+actionMsg);
-        String msg = ServerMessage.compileGameMessage(GameMessage.MSG_GAME, roomID, actionMsg);		// GET ID OF ROOM
+        System.out.println("Message that is going : " + actionMsg);
+        String msg = ServerMessage.compileGameMessage(GameMessage.MSG_GAME, roomID, actionMsg);        // GET ID OF ROOM
         gameClient.sendToServer(msg, true);
     }
 }

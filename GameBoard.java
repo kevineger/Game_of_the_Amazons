@@ -8,9 +8,7 @@
  */
 
 import javax.swing.*;
-
 import java.awt.*;
-import java.awt.event.MouseEvent;
 
 public class GameBoard extends JFrame {
 	JSplitPane Pane;
@@ -63,6 +61,8 @@ public class GameBoard extends JFrame {
 
         JPanel panel1 = (JPanel)Board.getComponent(friendly[0].getConcatPos());
         panel1.add(QueenW1);
+        panel1.setVisible(true);
+        panel1.setEnabled(true);
         JPanel panel2 = (JPanel)Board.getComponent(friendly[1].getConcatPos());
         panel2.add(QueenW2);
         JPanel panel3 = (JPanel)Board.getComponent(friendly[2].getConcatPos());

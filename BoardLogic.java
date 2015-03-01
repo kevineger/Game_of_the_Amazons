@@ -134,13 +134,33 @@ public class BoardLogic {
 		return friendly;
 	}
 
+    /**
+     * returns the list of all arrows on the board
+     */
+    protected ArrayList<Arrow> getArrows() {return arrows;}
+
+    protected BoardLogic deepCopy() {
+        Queen[] newFriendly = new Queen[4];
+        Queen[] newEnemies = new Queen[4];
+        ArrayList<Arrow> newArrows = new ArrayList<Arrow>();
+        for(int i=0; i<newEnemies.length; i++) {
+            newFriendly[i]=friendly[i];
+            newEnemies[i]=enemies[i];
+        }
+        for(Arrow a : arrows) {
+            newArrows.add(a);
+        }
+        BoardLogic newBoard = new BoardLogic(newEnemies, newFriendly, newArrows);
+        return newBoard;
+    }
+
 	/**
 	 * returns a list of legal move information objects of legal moves for a given gamePiece G
 	 * 
 	 * @param G GamePiece to inspect
 	 * @return list of legal moves of piece G
 	 */
-	private ArrayList<moveData> isLegalMove(GamePiece G) {
+	protected ArrayList<moveData> getQueenMoves(GamePiece G) {
 		// array list of positions to be returned
 		ArrayList<moveData> legal = new ArrayList<moveData>();
 
@@ -219,7 +239,7 @@ public class BoardLogic {
 	 * returns list of all legal moves available for every piece
 	 * @return ArrayList<XYPosition> of all moves available
 	 */
-	protected  ArrayList<moveData> getLegalQueenMoves(){
+	protected  ArrayList<moveData> getAllLegalQueenMoves(){
 		return legalQueenMoves;
 	}
 
@@ -238,7 +258,7 @@ public class BoardLogic {
         if(legalArrowShots != null)
 		    legalArrowShots.clear();
 		for(GamePiece G : friendly){
-			legalArrowShots.addAll(isLegalMove(G));
+			legalArrowShots.addAll(getQueenMoves(G));
 		}
 	}
 
@@ -248,7 +268,7 @@ public class BoardLogic {
 	private void updateLegalQueenMoves(){
 		legalQueenMoves.clear();
 		for(GamePiece G : friendly){
-			legalQueenMoves.addAll(isLegalMove(G));
+			legalQueenMoves.addAll(getQueenMoves(G));
 		}
 	}
 

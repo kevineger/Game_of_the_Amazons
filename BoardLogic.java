@@ -30,7 +30,8 @@ public class BoardLogic {
 	private  ArrayList<moveData> legalArrowShots;
 	private  ArrayList<moveData> legalQueenMoves;
 
-	GameBoard frame = null;
+    GameBoard frame = null;
+
 	/**
 	 * creates a board depending on whether we are the starting player or not
 	 * with top left corner being coordinate (0,0) and bottom right (9,9)
@@ -71,12 +72,12 @@ public class BoardLogic {
 			enemies = new Queen[] { (Queen) board[6][0], (Queen) board[6][9], (Queen) board[9][3],	(Queen) board[9][6] };
 		}
 
-//		Start GUI
-		frame = new GameBoard(friendly, enemies);
-    	frame.pack();
-    	frame.setResizable(false);
-    	frame.setLocationRelativeTo( null );
-    	frame.setVisible(true);
+        //		Start GUI
+        frame = new GameBoard(friendly, enemies);
+        frame.pack();
+        frame.setResizable(false);
+        frame.setLocationRelativeTo( null );
+        frame.setVisible(true);
 
         arrows = new ArrayList<>();
         legalArrowShots = new ArrayList<>();
@@ -146,101 +147,110 @@ public class BoardLogic {
         Queen[] newEnemies = new Queen[4];
         ArrayList<Arrow> newArrows = new ArrayList<Arrow>();
         for(int i=0; i<newEnemies.length; i++) {
-            newFriendly[i]=friendly[i];
-            newEnemies[i]=enemies[i];
+            newFriendly[i]=friendly[i].clone();
+            newEnemies[i]=enemies[i].clone();
         }
         if(arrows!=null) {
             for(Arrow a : arrows) {
-                newArrows.add(a);
+                newArrows.add(a.clone());
             }
         }
 
-        System.out.printf("Enemies: "+newEnemies.length+"\nFriendlies: "+newFriendly.length+"\nArrows: "+newArrows.size()+"\n");
         BoardLogic newBoard = new BoardLogic(newEnemies, newFriendly, newArrows);
         return newBoard;
     }
-    protected ArrayList<moveData> getArrowShots(GamePiece G) {
-        return getQueenMoves(G);
+
+    /**
+     * @param G
+     * @return list of all legal moves from game piece
+     */
+
+    protected ArrayList<moveData> getLegalMoves(GamePiece G) {
+        ArrayList<moveData> legalMoves = new ArrayList<>();
+
+        int curRow = G.getRowPos();
+        int curCol = G.getColumnPos();
+
+//        Legal Moves Left
+        for(int i = 1; curCol-i>=0; i++) {
+            if(board[curRow][curCol-i]==null) {
+                legalMoves.add(new moveData(curCol-i,curRow,G));
+            }
+            else break;
+        }
+
+//        Legal Moves Diagonal Left/Up
+        for(int i = 1; curRow-i>=0&&curCol-i>=0; i++) {
+            if(board[curRow-i][curCol-i]==null) {
+                legalMoves.add(new moveData(curCol-i,curRow-i,G));
+            }
+            else break;
+        }
+
+//        Legal Moves Up
+        for(int i = 1; curRow-i>=0; i++) {
+            if(board[curRow-i][curCol]==null) {
+                legalMoves.add(new moveData(curCol,curRow-i,G));
+            }
+            else break;
+        }
+
+//        Legal Moves Diagonal Right/Up
+        for(int i = 1; curRow-i>=0&&curCol+i<=9; i++) {
+            if(board[curRow-i][curCol+i]==null) {
+                legalMoves.add(new moveData(curCol+i,curRow-i,G));
+            }
+            else break;
+        }
+
+//        Legal Moves Right
+        for(int i = 1; curCol+i<=9; i++) {
+            if(board[curRow][curCol+i]==null) {
+                legalMoves.add(new moveData(curCol+i,curRow,G));
+            }
+            else break;
+        }
+
+//        Legal Moves Diagonal Right/Down
+        for(int i = 1; curRow+i<=9&&curCol+i<=9; i++) {
+            if(board[curRow+i][curCol+i]==null) {
+                legalMoves.add(new moveData(curCol+i,curRow+i,G));
+            }
+            else break;
+        }
+
+//        Legal Moves Down
+        for(int i = 1; curRow+i<=9; i++) {
+            if(board[curRow+i][curCol]==null) {
+                legalMoves.add(new moveData(curCol,curRow+i,G));
+            }
+            else break;
+        }
+
+//        Legal Moves Diagonal Left/Down
+        for(int i = 1; curRow+i<=9&&curCol-i>=0; i++) {
+            if(board[curRow+i][curCol-i]==null) {
+                legalMoves.add(new moveData(curCol-i,curRow+i,G));
+            }
+            else break;
+        }
+        return legalMoves;
     }
 
 	/**
-	 * returns a list of legal move information objects of legal moves for a given gamePiece G
-	 * 
 	 * @param G GamePiece to inspect
 	 * @return list of legal moves of piece G
 	 */
 	protected ArrayList<moveData> getQueenMoves(GamePiece G) {
-		// array list of positions to be returned
-		ArrayList<moveData> legal = new ArrayList<moveData>();
+		return getLegalMoves(G);
+    }
 
-		// starting position to check axis' if legal move
-		int startRow = G.getRowPos();
-		int startCol = G.getColumnPos();
-
-		// get all legal moves from queen position going upwards
-		for (int i = 1; startRow - i >= 0; i++) {
-			if (board[startRow - i][startCol] == null)
-				legal.add(new moveData(startRow - i, startCol, G));
-			else
-				break;
-		}
-        // get all legal moves from queen position going downwards
-        for (int i = 1; startRow + i <= 9; i++) {
-            if (board[startRow + i][startCol] == null)
-                legal.add(new moveData(startCol, startRow + i, G));
-            else
-                break;
-        }
-
-        //getting all legal moves to the right of the queen
-        for (int i = 1; startCol + i <= 9; i++) {
-            if (board[startRow][startCol+i] == null)
-                legal.add(new moveData(startCol + i, startRow, G));
-            else
-                break;
-        }
-
-        //getting all legal moves to the right of the queen
-        for (int i = 1; startCol - i >= 0; i++) {
-            if (board[startRow][startCol-i] == null)
-                legal.add(new moveData(startCol - i, startRow, G));
-            else
-                break;
-        }
-
-        //get all legal moves down and to the right(diagonal) of the queen
-        for (int i = 1; (startCol + i <= 9) && (startRow + i <= 9); i++) {
-            if (board[startRow+i][startCol+i] == null){
-                legal.add(new moveData(startCol + i, startRow + i, G));
-            }else
-                break;
-        }
-
-        //get all legal moves up and to the right(diagonal) of the queen
-        for (int i = 1; (startRow - i >= 0) && (startCol + i <= 9); i++) {
-            if (board[startRow - i][startCol+i] == null){
-                legal.add(new moveData(startCol + i, startRow - i, G));
-            }else
-                break;
-        }
-
-        //get all legal moves down and to the left(diagonal) of queen
-        for (int i = 1; (startRow + i <= 9) && (startCol - i >= 0); i++) {
-            if (board[startRow + i][startCol - i] == null){
-                legal.add(new moveData(startCol - i, startRow + i, G));
-            }else
-                break;
-        }
-
-        //get all legal moves up and to the left(diagonal) of queen
-        for (int i = 1; (startRow - i >= 0) && (startCol - i >= 0); i++) {
-            if (board[startRow - i][startCol - i] == null){
-                legal.add(new moveData(startCol - i, startRow - i, G));
-            }else
-                break;
-        }
-
-        return legal;
+    /**
+     * @param G
+     * @return list of legal arrow shots from queen G
+     */
+    protected ArrayList<moveData> getArrowShots(GamePiece G) {
+        return getLegalMoves(G);
     }
 
     /**
@@ -353,25 +363,22 @@ public class BoardLogic {
      * after a move is done updates the board (action being queen move + arrow Shot)
      */
     protected void updateAfterMove(){
-        this.clearBoard();
+        clearBoard();
 
-        //reseting each friendly queen
+        //resetting each friendly queen
         for (Queen q : friendly) {
             board[q.getRowPos()][q.getColumnPos()] = q;
         }
 
-        //reseting each enemy queen
+        //resetting each enemy queen
         for(Queen q : enemies){
             board[q.getRowPos()][q.getColumnPos()] = q;
         }
 
-        //reseting each arrow
+        //resetting each arrow
         for(Arrow a : arrows){
             board[a.getRowPos()][a.getColumnPos()] = a;
         }
-
-        //re-making GUI
-//        frame.repaint();
     }
 
     /**
@@ -383,6 +390,17 @@ public class BoardLogic {
                 board[i][j] = null;
             }
         }
+    }
+
+    /**
+     * repaints the gui
+     */
+    protected void repaint() {
+        frame = new GameBoard(friendly, enemies);
+        frame.pack();
+        frame.setResizable(false);
+        frame.setLocationRelativeTo( null );
+        frame.setVisible(true);
     }
 
     /**

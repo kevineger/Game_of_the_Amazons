@@ -9,6 +9,11 @@ public class Arrow extends GamePiece {
         super(x,y);
     }
 
+    protected Arrow clone() {
+        Arrow aNew = new Arrow(colPos, rowPos);
+        return aNew;
+    }
+
     public String toString(){
         return "Arrow";
     }

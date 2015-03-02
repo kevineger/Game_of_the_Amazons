@@ -20,6 +20,11 @@ public class Queen extends GamePiece {
         this.rowPos =y;
     }
 
+    protected Queen clone() {
+        Queen qNew = new Queen(colPos, rowPos, true);
+        return qNew;
+    }
+
     public String toString(){
         String str;
         if(isOpponent)

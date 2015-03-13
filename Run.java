@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Run {
 //    Testing run
     public static void main(String[] args) {
-        GamePlayer gp = new GamePlayer("", "");
+        testTree T = new testTree();
+        T.test1();
     }
 }

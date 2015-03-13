@@ -3,11 +3,10 @@
  */
 public class Queen extends GamePiece {
 	
-	boolean isOpponent;
-	
 	protected Queen(int x, int y, boolean b) {
 		super(x, y);
-		isOpponent = b;
+        this.isQueen=true;
+        isOpponent = b;
 	}
 
     /**

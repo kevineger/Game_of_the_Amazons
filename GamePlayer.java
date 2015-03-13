@@ -36,8 +36,13 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         System.out.printf(getRooms());
         joinRoom();
 
-        SuccessorFunction sf = new SuccessorFunction();
-        sf.getSuccessors(bl);
+//        SuccessorFunction sf = new SuccessorFunction();
+//        sf.getSuccessors(bl);
+
+        MinKingDistHeuristic h = new MinKingDistHeuristic(bl);
+        h.calculate();
+        System.out.println("Owned by Us: "+h.ownedByUs);
+        System.out.println("Owned by Them: "+h.ownedByThem);
     }
 
     //	Gets room list

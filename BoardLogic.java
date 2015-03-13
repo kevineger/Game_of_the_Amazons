@@ -23,14 +23,15 @@ import java.util.ArrayList;
 public class BoardLogic {
 
     private boolean enemyHasMove;
-	private GamePiece[][] board = new GamePiece[10][10];
+	protected GamePiece[][] board = new GamePiece[10][10];
 	private  Queen[] enemies;
 	private  Queen[] friendly;
     private  ArrayList<Arrow> arrows;
 	private  ArrayList<moveData> legalArrowShots;
 	private  ArrayList<moveData> legalQueenMoves;
 
-    GameBoard frame = null;
+//    GameBoard frame = null;
+    Board frame = null;
 
 	/**
 	 * creates a board depending on whether we are the starting player or not
@@ -73,10 +74,7 @@ public class BoardLogic {
 		}
 
         //		Start GUI
-        frame = new GameBoard(friendly, enemies);
-        frame.pack();
-        frame.setResizable(false);
-        frame.setLocationRelativeTo( null );
+        frame = new Board();
         frame.setVisible(true);
 
         arrows = new ArrayList<>();
@@ -95,10 +93,7 @@ public class BoardLogic {
 		this.board = newBoard;
 
 //      Start GUI
-        frame = new GameBoard(friendly, enemies);
-        frame.pack();
-        frame.setResizable(false);
-        frame.setLocationRelativeTo( null );
+        frame = new Board();
         frame.setVisible(true);
 
         legalArrowShots = new ArrayList<moveData>();
@@ -395,12 +390,8 @@ public class BoardLogic {
     /**
      * repaints the gui
      */
-    protected void repaint() {
-        frame = new GameBoard(friendly, enemies);
-        frame.pack();
-        frame.setResizable(false);
-        frame.setLocationRelativeTo( null );
-        frame.setVisible(true);
+    protected void updateBoard(move queenMove, moveData arrowShot, boolean isEnemy) {
+        frame.update(queenMove, arrowShot, isEnemy);
     }
 
     /**

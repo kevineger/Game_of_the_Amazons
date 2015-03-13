@@ -7,6 +7,8 @@ public class GamePiece {
 	//all possible pieces that will be on the board
 	protected int rowPos;
 	protected int colPos;
+    protected boolean isQueen;
+    protected boolean isOpponent;
 	
 	/**
 	 * sets our pieces

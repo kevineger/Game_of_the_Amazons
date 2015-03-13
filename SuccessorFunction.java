@@ -44,11 +44,6 @@ public class SuccessorFunction {
 //                        Update board
                         newBoard.updateAfterMove();
 
-//                        Testing first possible move
-                        if(k==0&&j==0&&i==0) {
-                            newBoard.repaint();
-                        }
-
 //                        Add copied board with move made to successors
                         stateCount ++;
                         successors.add(newBoard);

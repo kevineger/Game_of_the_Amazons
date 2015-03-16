@@ -5,8 +5,8 @@
  */
 public class Arrow extends GamePiece {
 
-    public Arrow(int x, int y){
-        super(x,y);
+    public Arrow(int y, int x){
+        super(y,x);
     }
 
     protected Arrow clone() {
@@ -15,6 +15,7 @@ public class Arrow extends GamePiece {
     }
 
     public String toString(){
+//        return "\nRow: "+rowPos+", Col: "+colPos;
         return "Arrow";
     }
 

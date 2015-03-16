@@ -14,7 +14,7 @@ public class Queen extends GamePiece {
      * @param x column number(0-9)
      * @param y row number (0-9)
      */
-    protected void move(int x , int y){
+    protected void move(int y , int x){
         this.colPos =x;
         this.rowPos =y;
     }

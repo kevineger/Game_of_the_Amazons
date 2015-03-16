@@ -117,8 +117,8 @@ public class Board extends JPanel
         else {
             queen = whiteQueen;
         }
-        board[9 - queenMove.oldRowPos][queenMove.oldColPos].setIcon(null);
-        board[9 - queenMove.newRowPos][queenMove.newColPos].setIcon(queen);
-        board[9 - arrowShot.rowPos][arrowShot.colPos].setIcon(arrowMark);
+        board[queenMove.oldRowPos][queenMove.oldColPos].setIcon(null);
+        board[queenMove.newRowPos][queenMove.newColPos].setIcon(queen);
+        board[arrowShot.rowPos][arrowShot.colPos].setIcon(arrowMark);
     }
 }

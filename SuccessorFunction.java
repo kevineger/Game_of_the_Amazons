@@ -38,8 +38,8 @@ public class SuccessorFunction {
                         newBoard.addArrow(legalArrowShots.get(k).colPos,legalArrowShots.get(k).rowPos);
 
 //                        PRINT THE STATE
-                        System.out.println("\nQueen "+i+" at ("+queens[i].getRowPos()+", "+queens[i].getColumnPos()+") moving to ("+ curQueenMoves.get(j).rowPos + ", " + curQueenMoves.get(j).colPos+")");
-                        System.out.println("State Generated: Arrow Throw #"+k+"\nQueen: " + i + " || Location: (" + curQueenMoves.get(j).rowPos + ", " + curQueenMoves.get(j).colPos + ") || Arrow: (" + legalArrowShots.get(k).rowPos + ", " +legalArrowShots.get(k).colPos+")");
+//                        System.out.println("\nQueen "+i+" at ("+queens[i].getRowPos()+", "+queens[i].getColumnPos()+") moving to ("+ curQueenMoves.get(j).rowPos + ", " + curQueenMoves.get(j).colPos+")");
+//                        System.out.println("State Generated: Arrow Throw #"+k+"\nQueen: " + i + " || Location: (" + curQueenMoves.get(j).rowPos + ", " + curQueenMoves.get(j).colPos + ") || Arrow: (" + legalArrowShots.get(k).rowPos + ", " +legalArrowShots.get(k).colPos+")");
 
 //                        Update board
                         newBoard.updateAfterMove();

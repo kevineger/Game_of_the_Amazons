@@ -14,8 +14,8 @@ public class moveData {
 	 * @param y row position of a piece
 	 */
 	public moveData(int x, int y, GamePiece Q){
-        colPos = Q.colPos;
-        rowPos = Q.rowPos;
+        colPos = y;
+        rowPos = x;
 		this.Q = Q;
 	}
 	

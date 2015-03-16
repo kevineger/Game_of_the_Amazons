@@ -5,9 +5,14 @@ import java.util.ArrayList;
  * Created by TCulos on 2015-03-11.
  */
 public class SearchNode {
+
+    private moveData queenMove;
+    private Arrow arrowShot;
     private BoardLogic B;
     private Integer value = 0;
-    private  ArrayList<SearchNode> children = new ArrayList<SearchNode>();
+    private ArrayList<SearchNode> children = new ArrayList<SearchNode>();
+    private MinKingDistHeuristic heuristic;
+    private SuccessorFunction funct = new SuccessorFunction();
 
     /**
      * creates a search node from a board and an evaluation
@@ -17,6 +22,7 @@ public class SearchNode {
     public SearchNode(BoardLogic board, int heuristicValue){
         B = board;
         value = heuristicValue;
+        heuristic = new MinKingDistHeuristic(board);
     }
 
     /**
@@ -25,6 +31,7 @@ public class SearchNode {
      */
     public SearchNode(BoardLogic board){
         B = board;
+        heuristic = new MinKingDistHeuristic(board);
     }
 
 
@@ -49,11 +56,31 @@ public class SearchNode {
     }
 
     /**
-     * adds a child to this node
-     * @param S
+     * returns the move that got to this gamestate
+     * @return
      */
-    public void addChild(SearchNode S){
-        children.add(S);
+    public moveData getMove(){
+        return queenMove;
+    }
+
+    /**
+     * adds all children of the game state
+     */
+    public void setAllChildren(){
+        ArrayList<BoardLogic> kids = funct.getSuccessors(B);
+
+        for(BoardLogic b:kids){
+            children.add(new SearchNode(b));
+        }
+
+    }
+
+    /**
+     * sets all succesors in the tree as searchnodes instead of boardlogics
+     */
+    public void setHeuristicValue(){
+        heuristic.calculate();
+        value = heuristic.ownedByUs;
     }
 
     /**
@@ -61,6 +88,7 @@ public class SearchNode {
      * @return
      */
     public int getValue(){
+        this.B.toString();
         return value;
     }
 

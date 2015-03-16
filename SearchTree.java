@@ -25,6 +25,10 @@ public class SearchTree {
         depth = D;
     }
 
+    public SearchNode getRoot(){
+        return root;
+    }
+
     public void StartAlphaBeta(){
         calculateDepth();
         AlphaBeta(root, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
@@ -34,6 +38,7 @@ public class SearchTree {
 
         if(D == 0) {
             evaluations++;
+            N.setHeuristicValue();
             System.out.println(N.getValue());
             return N.getValue();
         }
@@ -49,7 +54,7 @@ public class SearchTree {
                 if(beta < alpha)
                     break;
             }
-
+            N.setValue(V);
             return V;
         }else{
 
@@ -62,27 +67,70 @@ public class SearchTree {
                 if(beta < alpha)
                     break;
             }
-
+            N.setValue(V);
             return V;
         }
     }
 
+    /**
+     * test used before heuristic analysis implemented
+     */
     public void test1(){
-        System.out.println("Starting test 1 for frontier of increasing heuristic val 1-9");
+        System.out.println("Starting test 1 for frontier of increasing heuristic val 1-75");
         for (int i = 0; i < 3; i++) {
             root.getChildren().add(new SearchNode(null));
         }
 
-        int j = 1;
         for(SearchNode S: root.getChildren()){
-
             for (int i = 0; i < 3; i++) {
-                S.getChildren().add(new SearchNode(null ,j));
-                j++;
+                S.getChildren().add(new SearchNode(null));
             }
         }
 
+        for (SearchNode S: root.getChildren()) {
+            for(SearchNode H: S.getChildren()) {
+                for (int i = 0; i < 3; i++) {
+                    H.getChildren().add(new SearchNode(null));
+                }
+            }
+        }
+
+        int j = 1;
+        for (SearchNode S: root.getChildren()) {
+            for(SearchNode H: S.getChildren()) {
+                for(SearchNode G: H.getChildren()){
+                    for (int i = 0; i <3 ; i++) {
+                        G.getChildren().add(new SearchNode(null, j));
+                        j++;
+                    }
+                }
+            }
+        }
+
+        evaluations = 0;
+
         this.StartAlphaBeta();
         System.out.println("Nodes Evaluated: " +evaluations);
+
+        int i = 1;
+        for(SearchNode S: root.getChildren()){
+            System.out.println("Node: "+i +" value: " +S.getValue());
+            i++;
+        }
+    }
+
+    public void test2(){
+        System.out.println("Starting test 2 for a tree of actual game data of depth 2");
+
+        root.setAllChildren();
+        for(SearchNode S: root.getChildren()){
+            S.setAllChildren();
+        }
+        evaluations = 0;
+
+//        System.out.println("Starting Alpha-Beta");
+//        this.StartAlphaBeta();
+//        System.out.println("Nodes Evaluated: " +evaluations);
+
     }
 }

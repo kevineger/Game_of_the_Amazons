@@ -74,8 +74,8 @@ public class BoardLogic {
 		}
 
         //		Start GUI
-        frame = new Board();
-        frame.setVisible(true);
+//        frame = new Board();
+//        frame.setVisible(true);
 
         arrows = new ArrayList<>();
         legalArrowShots = new ArrayList<>();

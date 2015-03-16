@@ -21,6 +21,8 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
     GameClient gameClient = null;
     BoardLogic bl;
 
+    String teamName = "";
+
     /*
      * Constructor
      */
@@ -32,17 +34,21 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         bl = new BoardLogic(true);
 
         //Three arguments: user name (any), passwd (any), this (delegate)
+        teamName = name;
+
         gameClient = new GameClient(name, passwd, this);
         System.out.printf(getRooms());
         joinRoom();
 
-//        SuccessorFunction sf = new SuccessorFunction();
-//        sf.getSuccessors(bl);
+        SuccessorFunction sf = new SuccessorFunction();
 
-        MinKingDistHeuristic h = new MinKingDistHeuristic(bl);
-        h.calculate();
-        System.out.println("Owned by Us: "+h.ownedByUs);
-        System.out.println("Owned by Them: "+h.ownedByThem);
+        bl = sf.getSuccessors(bl).get(0);
+        System.out.println("\nFirst Successor\n"+bl.toString());
+//
+//        MinKingDistHeuristic h = new MinKingDistHeuristic(bl);
+//        h.calculate();
+//        System.out.println("Owned by Us: "+h.ownedByUs);
+//        System.out.println("Owned by Them: "+h.ownedByThem);
     }
 
     //	Gets room list
@@ -81,7 +87,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
             case GameMessage.ACTION_GAME_START:
                 System.out.println("Message Type: ACTION_GAME_START");
                 //find name and associated
-                String teamName = "1";                // the GamePlayer Name (should be the same as name in Run.java) CHANGE NAME L8R
+                teamName = "1";                // the GamePlayer Name (should be the same as name in Run.java) CHANGE NAME L8R
                 String teamRole = "";
 
                 IXMLElement firstChild = xml.getChildAtIndex(0);
@@ -95,7 +101,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                         break;
                     }
                 }
-                System.out.println("Role: " + teamRole);
+                System.out.println("Team: "+teamName+" is Role: " + teamRole);
                 break;
             case GameMessage.ACTION_MOVE:
                 System.out.println("Message Type: ACTION_MOVE");

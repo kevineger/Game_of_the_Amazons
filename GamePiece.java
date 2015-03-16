@@ -15,9 +15,9 @@ public class GamePiece {
 	 * @param columnPos 
 	 * @param rowPos 
 	 */
-	public GamePiece(int columnPos, int rowPos){
-		this.colPos= columnPos;
-		this.rowPos = rowPos;
+	public GamePiece(int y, int x){
+		this.colPos= x;
+		this.rowPos = y;
 	}
 	
 	/**

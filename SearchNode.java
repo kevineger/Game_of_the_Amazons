@@ -70,6 +70,7 @@ public class SearchNode {
         ArrayList<BoardLogic> kids = funct.getSuccessors(B);
 
         for(BoardLogic b:kids){
+            System.out.println(b.toString());
             children.add(new SearchNode(b));
         }
 

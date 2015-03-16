@@ -123,14 +123,14 @@ public class SearchTree {
         System.out.println("Starting test 2 for a tree of actual game data of depth 2");
 
         root.setAllChildren();
-        for(SearchNode S: root.getChildren()){
-            S.setAllChildren();
-        }
+//        for(SearchNode S: root.getChildren()){
+//            S.setAllChildren();
+//        }
         evaluations = 0;
 
-//        System.out.println("Starting Alpha-Beta");
-//        this.StartAlphaBeta();
-//        System.out.println("Nodes Evaluated: " +evaluations);
+        System.out.println("Starting Alpha-Beta");
+        this.StartAlphaBeta();
+        System.out.println("Nodes Evaluated: " +evaluations);
 
     }
 }

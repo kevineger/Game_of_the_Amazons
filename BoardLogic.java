@@ -1,32 +1,13 @@
 import java.awt.*;
 import java.util.ArrayList;
 
-/**
- * KNOWN PROBLEMS:	1) ...
- *
- * 
- * WANT TO ADD:		1) method to keep track of moves available to our opponent(want to use this in a heuristic
- * 					   where we weigh a move based on how many moves it gives us VS. restricts their moves)
- * 					2) ...
- */
-
-/**
- * game board class made of GamePieces, to be called for each game of Amazons
- * played includes helper methods for state-space search as well as helper data
- * structures for searching for the enemy/yourself
- * 
- * boardLogic is made of GamePieces, null if open position on board
- * 
- * @author TCulos
- *
- */
 public class BoardLogic {
 
     private boolean enemyHasMove;
 	protected GamePiece[][] board = new GamePiece[10][10];
 	private  Queen[] enemies;
 	private  Queen[] friendly;
-    private  ArrayList<Arrow> arrows;
+    protected  ArrayList<Arrow> arrows;
 	private  ArrayList<moveData> legalArrowShots;
 	private  ArrayList<moveData> legalQueenMoves;
 
@@ -142,12 +123,13 @@ public class BoardLogic {
         Queen[] newEnemies = new Queen[4];
         ArrayList<Arrow> newArrows = new ArrayList<Arrow>();
         for(int i=0; i<newEnemies.length; i++) {
-            newFriendly[i]=friendly[i].clone();
-            newEnemies[i]=enemies[i].clone();
+            newFriendly[i]= new Queen(friendly[i].getRowPos(),friendly[i].getColumnPos(),friendly[i].isOpponent);
+            newEnemies[i]= new Queen(enemies[i].getRowPos(),enemies[i].getColumnPos(),enemies[i].isOpponent);
         }
         if(arrows!=null) {
             for(Arrow a : arrows) {
-                newArrows.add(a.clone());
+                if(a != null)
+                    newArrows.add(new Arrow(a.getRowPos(),a.getColumnPos()));
             }
         }
 
@@ -244,8 +226,76 @@ public class BoardLogic {
      * @param G
      * @return list of legal arrow shots from queen G
      */
-    protected ArrayList<moveData> getArrowShots(GamePiece G) {
-        return getLegalMoves(G);
+    protected ArrayList<Arrow> getArrowShots(GamePiece G) {
+        ArrayList<Arrow> legalShots = new ArrayList<>();
+
+        int curRow = G.getRowPos();
+        int curCol = G.getColumnPos();
+
+//        Legal Moves Left
+        for(int i = 1; curCol-i>=0; i++) {
+            if(board[curRow][curCol-i]==null) {
+                legalShots.add(new Arrow(curRow, curCol-i));
+            }
+            else break;
+        }
+
+//        Legal Moves Diagonal Left/Up
+        for(int i = 1; curRow-i>=0&&curCol-i>=0; i++) {
+            if(board[curRow-i][curCol-i]==null) {
+                legalShots.add(new Arrow(curRow-i,curCol-i));
+            }
+            else break;
+        }
+
+//        Legal Moves Up
+        for(int i = 1; curRow-i>=0; i++) {
+            if(board[curRow-i][curCol]==null) {
+                legalShots.add(new Arrow(curRow-i,curCol));
+            }
+            else break;
+        }
+
+//        Legal Moves Diagonal Right/Up
+        for(int i = 1; curRow-i>=0&&curCol+i<=9; i++) {
+            if(board[curRow-i][curCol+i]==null) {
+                legalShots.add(new Arrow(curRow-i,curCol+i));
+            }
+            else break;
+        }
+
+//        Legal Moves Right
+        for(int i = 1; curCol+i<=9; i++) {
+            if(board[curRow][curCol+i]==null) {
+                legalShots.add(new Arrow(curRow,curCol+i));
+            }
+            else break;
+        }
+
+//        Legal Moves Diagonal Right/Down
+        for(int i = 1; curRow+i<=9&&curCol+i<=9; i++) {
+            if(board[curRow+i][curCol+i]==null) {
+                legalShots.add(new Arrow(curRow+i,curCol+i));
+            }
+            else break;
+        }
+
+//        Legal Moves Down
+        for(int i = 1; curRow+i<=9; i++) {
+            if(board[curRow+i][curCol]==null) {
+                legalShots.add(new Arrow(curRow+i,curCol));
+            }
+            else break;
+        }
+
+//        Legal Moves Diagonal Left/Down
+        for(int i = 1; curRow+i<=9&&curCol-i>=0; i++) {
+            if(board[curRow+i][curCol-i]==null) {
+                legalShots.add(new Arrow(curRow+i,curCol-i));
+            }
+            else break;
+        }
+        return legalShots;
     }
 
     /**
@@ -349,8 +399,8 @@ public class BoardLogic {
      * @param x co-ordinate
      * @param y co-ordinate
      */
-    protected void addArrow(int x, int y){
-        arrows.add(new Arrow(x,y));
+    protected void addArrow(int y, int x){
+        arrows.add(new Arrow(y,x));
         updateAfterMove();
     }
 

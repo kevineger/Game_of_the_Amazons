@@ -6,7 +6,7 @@ import java.util.ArrayList;
  */
 public class SearchNode {
     private BoardLogic B;
-    private Integer value = null;
+    private Integer value = 0;
     private  ArrayList<SearchNode> children = new ArrayList<SearchNode>();
 
     /**

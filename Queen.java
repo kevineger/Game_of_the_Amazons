@@ -20,7 +20,7 @@ public class Queen extends GamePiece {
     }
 
     protected Queen clone() {
-        Queen qNew = new Queen(colPos, rowPos, isOpponent);
+        Queen qNew = new Queen( rowPos, colPos, isOpponent);
         return qNew;
     }
 

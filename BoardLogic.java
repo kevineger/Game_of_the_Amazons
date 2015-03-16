@@ -123,8 +123,8 @@ public class BoardLogic {
         Queen[] newEnemies = new Queen[4];
         ArrayList<Arrow> newArrows = new ArrayList<Arrow>();
         for(int i=0; i<newEnemies.length; i++) {
-            newFriendly[i]= new Queen(friendly[i].getRowPos(),friendly[i].getColumnPos(),friendly[i].isOpponent);
-            newEnemies[i]= new Queen(enemies[i].getRowPos(),enemies[i].getColumnPos(),enemies[i].isOpponent);
+            newFriendly[i]= friendly[i].clone();
+            newEnemies[i]= enemies[i].clone();
         }
         if(arrows!=null) {
             for(Arrow a : arrows) {

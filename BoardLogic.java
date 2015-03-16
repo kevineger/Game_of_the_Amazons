@@ -150,7 +150,7 @@ public class BoardLogic {
 //        Legal Moves Left
         for(int i = 1; curCol-i>=0; i++) {
             if(board[curRow][curCol-i]==null) {
-                legalMoves.add(new moveData(curCol-i,curRow,G));
+                legalMoves.add(new moveData(curRow,curCol-i,G));
             }
             else break;
         }
@@ -158,7 +158,7 @@ public class BoardLogic {
 //        Legal Moves Diagonal Left/Up
         for(int i = 1; curRow-i>=0&&curCol-i>=0; i++) {
             if(board[curRow-i][curCol-i]==null) {
-                legalMoves.add(new moveData(curCol-i,curRow-i,G));
+                legalMoves.add(new moveData(curRow-i,curCol-i,G));
             }
             else break;
         }
@@ -166,7 +166,7 @@ public class BoardLogic {
 //        Legal Moves Up
         for(int i = 1; curRow-i>=0; i++) {
             if(board[curRow-i][curCol]==null) {
-                legalMoves.add(new moveData(curCol,curRow-i,G));
+                legalMoves.add(new moveData(curRow-i,curCol,G));
             }
             else break;
         }
@@ -174,7 +174,7 @@ public class BoardLogic {
 //        Legal Moves Diagonal Right/Up
         for(int i = 1; curRow-i>=0&&curCol+i<=9; i++) {
             if(board[curRow-i][curCol+i]==null) {
-                legalMoves.add(new moveData(curCol+i,curRow-i,G));
+                legalMoves.add(new moveData(curRow-i,curCol+i,G));
             }
             else break;
         }
@@ -182,7 +182,7 @@ public class BoardLogic {
 //        Legal Moves Right
         for(int i = 1; curCol+i<=9; i++) {
             if(board[curRow][curCol+i]==null) {
-                legalMoves.add(new moveData(curCol+i,curRow,G));
+                legalMoves.add(new moveData(curRow,curCol+i,G));
             }
             else break;
         }
@@ -190,7 +190,7 @@ public class BoardLogic {
 //        Legal Moves Diagonal Right/Down
         for(int i = 1; curRow+i<=9&&curCol+i<=9; i++) {
             if(board[curRow+i][curCol+i]==null) {
-                legalMoves.add(new moveData(curCol+i,curRow+i,G));
+                legalMoves.add(new moveData(curRow+i,curCol+i,G));
             }
             else break;
         }
@@ -198,7 +198,7 @@ public class BoardLogic {
 //        Legal Moves Down
         for(int i = 1; curRow+i<=9; i++) {
             if(board[curRow+i][curCol]==null) {
-                legalMoves.add(new moveData(curCol,curRow+i,G));
+                legalMoves.add(new moveData(curRow+i,curCol,G));
             }
             else break;
         }
@@ -206,7 +206,7 @@ public class BoardLogic {
 //        Legal Moves Diagonal Left/Down
         for(int i = 1; curRow+i<=9&&curCol-i>=0; i++) {
             if(board[curRow+i][curCol-i]==null) {
-                legalMoves.add(new moveData(curCol-i,curRow+i,G));
+                legalMoves.add(new moveData(curRow+i,curCol-i,G));
             }
             else break;
         }

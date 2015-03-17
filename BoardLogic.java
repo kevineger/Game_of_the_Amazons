@@ -459,18 +459,35 @@ public class BoardLogic {
 
 	@Override
     public String toString(){
-		String str = "Current board:\n";
-		if(board != null){
-			for(int i = 0; i <= 9; i++){
-				str+= "\n";
-				for(int j = 0; j <= 9; j++){
-					str += String.format("%-11s", board[i][j]);
-				}
-				str += "\n";
-			}
-		}else
-			str += "is null";
-
-		return str;
+//		String str = "Current board:\n";
+//		if(board != null){
+//			for(int i = 0; i <= 9; i++){
+//				str+= "\n";
+//				for(int j = 0; j <= 9; j++){
+//					str += String.format("%-11s", board[i][j]);
+//				}
+//				str += "\n";
+//			}
+//		}else
+//			str += "is null";
+//
+//		return str;
+        String s = "\n";
+        String line = "\no--- --- --- --- --- --- --- --- --- ---o";
+        for(int i=0; i<10; i++) {
+            s+=line+"\n";
+            for(int j=0; j<10; j++) {
+                s+="| ";
+                if(board[i][j]==null) s+="  ";
+                else if(board[i][j].isQueen){
+                    if(board[i][j].isOpponent) s+="B ";
+                    else s+="W ";
+                }
+                else s+="a ";
+            }
+            s+="|";
+        }
+        s+=line;
+        return s;
 	}
 }

@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.util.Scanner;
 
 import net.n3.nanoxml.IXMLElement;
+import ubco.ai.GameRoom;
 import ubco.ai.connection.ServerMessage;
 import ubco.ai.games.GameClient;
 import ubco.ai.games.GameMessage;
@@ -21,7 +22,9 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
     GameClient gameClient = null;
     BoardLogic bl;
 
-    String teamName = "";
+    String role;                    // role is the string that holds if we go first (B) or second (W)
+    String teamName;
+    int roomID;
 
     /*
      * Constructor
@@ -31,19 +34,20 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         //A player has to maintain an instance of GameClient, and register itself with the
         //GameClient. Whenever there is a message from the server, the Gameclient will invoke
         //the player's handleMessage() method.
-        bl = new BoardLogic(true);
+//        bl = new BoardLogic(true);             we will need to create the board when we know whether we are W or B
 
         //Three arguments: user name (any), passwd (any), this (delegate)
         teamName = name;
+        role = "";
 
         gameClient = new GameClient(name, passwd, this);
         System.out.printf(getRooms());
         joinRoom();
 
-        SuccessorFunction sf = new SuccessorFunction();
+//        SuccessorFunction sf = new SuccessorFunction();
 
-        bl = sf.getSuccessors(bl).get(0);
-        System.out.println("\nFirst Successor\n"+bl.toString());
+//        bl = sf.getSuccessors(bl).get(0);
+//        System.out.println("\nFirst Successor\n"+bl.toString());
 //
 //        MinKingDistHeuristic h = new MinKingDistHeuristic(bl);
 //        h.calculate();
@@ -63,12 +67,23 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
     public void joinRoom() {
         Scanner in = new Scanner(System.in);
         System.out.println("\nWhich room would you like to join?");
-        gameClient.joinGameRoom(in.nextLine());
 
-        String msg = "";
-        msg = "<action type='" + GameMessage.MSG_CHAT + "'>" + "Testing a chat message yo" + "</action>";
-        String messageToSend = ServerMessage.compileGameMessage(GameMessage.MSG_CHAT, 8, msg);
-        gameClient.sendToServer(messageToSend);
+        String room = in.nextLine();            // stores the name of the room we will be joining
+        gameClient.joinGameRoom(room);
+
+        // now we will check through the list of game rooms and see which one has this name and determine the room number
+        for (GameRoom r : gameClient.getRoomLists()) {
+            if (r.roomName == room) {
+                roomID = r.roomID;
+                System.out.println("The room ID of the room we are in (" + room + ") is " + roomID);
+                break;
+            }
+        }
+
+//        String msg = "";
+//        msg = "<action type='" + GameMessage.MSG_CHAT + "'>" + "Testing a chat message yo" + "</action>";
+//        String messageToSend = ServerMessage.compileGameMessage(GameMessage.MSG_CHAT, 8, msg);
+//        gameClient.sendToServer(messageToSend);
     }
 
     //general message from the server
@@ -87,7 +102,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
             case GameMessage.ACTION_GAME_START:
                 System.out.println("Message Type: ACTION_GAME_START");
                 //find name and associated
-                teamName = "1";                // the GamePlayer Name (should be the same as name in Run.java) CHANGE NAME L8R
                 String teamRole = "";
 
                 IXMLElement firstChild = xml.getChildAtIndex(0);
@@ -101,7 +115,26 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                         break;
                     }
                 }
-                System.out.println("Team: "+teamName+" is Role: " + teamRole);
+                role = teamRole;                                // stores our role internally
+                System.out.println("We are gameplayer "+ teamName + " and our Role is: " + role);
+                System.out.println("Our Move");
+
+                // Now, what we create a board logic depending on whether we move first (true) or second (false)
+                if (role == "W") {
+                    bl = new BoardLogic(true);
+                    SuccessorFunction sf = new SuccessorFunction();
+
+                    // now, we would call our heuristic on our successor function, and obtain the board we want to use
+                    bl = sf.getSuccessors(bl).get(0);       // or whatever board we define as the best
+
+                    // get the move from the bl
+                    // pass the move to sendToServer
+//                    sendToServer(GameMessage.ACTION_MOVE, roomID);
+                }
+                else {
+                    bl = new BoardLogic(false);
+                    // now, we will wait for a message from opponent, and deal with it as such
+                }
                 break;
             case GameMessage.ACTION_MOVE:
                 System.out.println("Message Type: ACTION_MOVE");
@@ -138,6 +171,8 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 
     /*
      * Method that sends messages (movement)
+     * queen_move should be in the format a3-g3 (where it refers to (column,row) of start position and end position)
+     * arrow_move should be in the format h3    ( h3 is the (column,row) of the arrow to be placed
      */
     public void sendToServer(String msgType, int roomID, String queen_move, String arrow_move) {
         String actionMsg = "<action type='";

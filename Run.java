@@ -15,6 +15,14 @@ public class Run {
 //
 //        T.test2();
 
-        GamePlayer gp = new GamePlayer("1","");
+        GamePlayer gp = new GamePlayer("4","");
+
+        try {
+            Thread.sleep(2000);                 //1000 milliseconds is one second.
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+
+        GamePlayer gp2 = new GamePlayer("5", "5");
     }
 }

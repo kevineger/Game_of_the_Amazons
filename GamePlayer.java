@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Random;
 import java.util.Scanner;
 
 import net.n3.nanoxml.IXMLElement;
@@ -117,15 +115,19 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 }
                 role = teamRole;                                // stores our role internally
                 System.out.println("We are gameplayer "+ teamName + " and our Role is: " + role);
-                System.out.println("Our Move");
+
 
                 // Now, what we create a board logic depending on whether we move first (true) or second (false)
-                if (role == "W") {
+                if (role.equals("W")) {
+                    System.out.println("Our Move");                 // message to ourselves saying we are moving first
                     bl = new BoardLogic(true);
                     SuccessorFunction sf = new SuccessorFunction();
 
+                    // instead, we perform a random move
+                    bl = randomMove(bl);
+
                     // now, we would call our heuristic on our successor function, and obtain the board we want to use
-                    bl = sf.getSuccessors(bl).get(0);       // or whatever board we define as the best
+//                    bl = sf.getSuccessors(bl).get(0);               // or whatever board we define as the best
 
                     // get the move from the bl
                     // pass the move to sendToServer
@@ -187,5 +189,45 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         System.out.println("Message that is going : " + actionMsg);
         String msg = ServerMessage.compileGameMessage(GameMessage.MSG_GAME, roomID, actionMsg);        // GET ID OF ROOM
         gameClient.sendToServer(msg, true);
+    }
+    /*
+     * Method that randomly chooses a queen to move, moves that queen, and randomly throws an arrow from that queen
+     * BoardLogic b: the current BoardLogic that is representing the game state
+     *
+     * The strings printed out at the end are in the form (col row) to follow the convention of sending to the server
+     *
+     * returns: BoardLogic representing the new game state after our random move.
+     */
+    private BoardLogic randomMove(BoardLogic b) {
+        Random r = new Random();
+        String originalPos;
+        // first we randomly choose a friendly queen, q
+        Queen q = b.getFriendly()[r.nextInt(4)];
+        System.out.println("Our randomly chosen queen is " + q.toString());
+        originalPos =  "" + q.colPos + " " + q.rowPos;
+
+        // Chooses the random move that queen q will make
+        moveData m = b.getLegalMoves(q).get(r.nextInt(b.getLegalMoves(q).size()));
+        System.out.println("Our randomly chosen move is " + m);
+
+        // then we move q to a random legal place on the board
+        q.move(m.rowPos, m.colPos);
+        bl.updateLegalQueenMoves();
+        String newPos = "" + q.colPos + " " + q.rowPos;
+
+        // now, choose a random arrowshot that the moved queen can perform
+        Arrow a = bl.getArrowShots(q).get(r.nextInt(bl.getArrowShots(q).size()));
+        System.out.println("Our Randomly chosen arrow location is: " + a.toString());
+        String arrowPos = "" + a.colPos + " " + a.rowPos;
+
+        // finally, we throw an arrow, a, from q's new position
+        bl.addArrow(a.rowPos, a.colPos);
+        // at last, we update the board and GUI
+        bl.updateAfterMove();
+
+        System.out.println("Original Queen Position: " + originalPos);
+        System.out.println("New Queen Position: " + newPos);
+        System.out.println("New Arrow Location: " + arrowPos);
+        return b;
     }
 }

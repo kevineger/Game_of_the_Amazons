@@ -15,8 +15,7 @@ public class Arrow extends GamePiece {
     }
 
     public String toString(){
-//        return "\nRow: "+rowPos+", Col: "+colPos;
-        return "Arrow";
+        return "Arrow is at Row: " + rowPos + ", Col: " + colPos;
     }
 
 }

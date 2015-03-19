@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.util.ArrayList;
 
 public class BoardLogic {
@@ -17,7 +16,7 @@ public class BoardLogic {
 	/**
 	 * creates a board depending on whether we are the starting player or not
 	 * with top left corner being coordinate (0,0) and bottom right (9,9)
-	 * 
+	 *
 	 * @param start true if we are first to move
 	 */
 	protected BoardLogic(boolean start) {
@@ -67,7 +66,7 @@ public class BoardLogic {
 	/**
 	 * sets a board that is equal to another board to be used in successor
 	 * function when we get there
-	 * 
+	 *
 	 * @param newBoard the board state we wish to create
 	 */
 	protected BoardLogic(GamePiece[][] newBoard) {
@@ -97,7 +96,7 @@ public class BoardLogic {
 
 	/**
 	 * returns the list of all opponent pieces on the board
-	 * 
+	 *
 	 * @return array of enemy GamePieces(have position variables)
 	 */
 	protected Queen[] getEnemies() {
@@ -106,7 +105,7 @@ public class BoardLogic {
 
 	/**
 	 * returns the list of all your pieces on the board
-	 * 
+	 *
 	 * @return array of friendly GamePieces(have position variables)
 	 */
 	protected Queen[] getFriendly() {
@@ -377,7 +376,7 @@ public class BoardLogic {
 	/**
 	 * method used to update where we can shoot after an amazon is moved or arrow shot
 	 */
-	private void updateLegalQueenMoves(){
+	public void updateLegalQueenMoves(){
 		legalQueenMoves.clear();
 		for(GamePiece G : friendly){
 			legalQueenMoves.addAll(getQueenMoves(G));

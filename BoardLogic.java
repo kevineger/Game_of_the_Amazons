@@ -5,8 +5,8 @@ public class BoardLogic {
 
     private boolean enemyHasMove;
 	protected GamePiece[][] board = new GamePiece[10][10];
-	private  Queen[] enemies;
-	private  Queen[] friendly;
+	protected  Queen[] enemies;
+	protected  Queen[] friendly;
     protected  ArrayList<Arrow> arrows;
 	private  ArrayList<moveData> legalArrowShots;
 	private  ArrayList<moveData> legalQueenMoves;
@@ -129,7 +129,7 @@ public class BoardLogic {
         if(arrows!=null) {
             for(Arrow a : arrows) {
                 if(a != null)
-                    newArrows.add(new Arrow(a.getRowPos(),a.getColumnPos()));
+                    newArrows.add(new Arrow(a.rowPos,a.colPos));
             }
         }
 
@@ -226,11 +226,11 @@ public class BoardLogic {
      * @param G
      * @return list of legal arrow shots from queen G
      */
-    protected ArrayList<Arrow> getArrowShots(GamePiece G) {
+    protected ArrayList<Arrow> getArrowShots(int y, int x) {
         ArrayList<Arrow> legalShots = new ArrayList<>();
 
-        int curRow = G.getRowPos();
-        int curCol = G.getColumnPos();
+        int curRow = y;
+        int curCol = x;
 
 //        Legal Moves Left
         for(int i = 1; curCol-i>=0; i++) {
@@ -422,7 +422,9 @@ public class BoardLogic {
 
         //resetting each arrow
         for(Arrow a : arrows){
-            board[a.getRowPos()][a.getColumnPos()] = a;
+            if(a!=null) {
+                board[a.getRowPos()][a.getColumnPos()] = a;
+            }
         }
     }
 

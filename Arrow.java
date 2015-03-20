@@ -10,7 +10,7 @@ public class Arrow extends GamePiece {
     }
 
     protected Arrow clone() {
-        Arrow aNew = new Arrow(colPos, rowPos);
+        Arrow aNew = new Arrow(rowPos, colPos);
         return aNew;
     }
 

@@ -5,6 +5,8 @@ import java.util.ArrayList;
  */
 public class SuccessorFunction {
 
+    public int count = 0;
+
 
     public ArrayList<BoardLogic> getSuccessors(BoardLogic state) {
         ArrayList<BoardLogic> successors = new ArrayList<BoardLogic>();
@@ -32,7 +34,7 @@ public class SuccessorFunction {
 //                    Update board
                 placeHolderBoard.updateAfterMove();
 
-                numshots = placeHolderBoard.getArrowShots(placeHolderBoard.getFriendly()[i]);
+                numshots = placeHolderBoard.getArrowShots(placeHolderBoard.getFriendly()[i].rowPos,placeHolderBoard.getFriendly()[i].colPos);
 
                 //for each arrow shot of a queen
                 for(int k=0; k<numshots.size(); k++) {
@@ -46,7 +48,7 @@ public class SuccessorFunction {
 
 //                    For each possible arrow shot
                     ArrayList<Arrow> legalArrowShots = new ArrayList<>();
-                    legalArrowShots = newBoard.getArrowShots(newBoardQueens[i]);
+                    legalArrowShots = newBoard.getArrowShots(newBoardQueens[i].rowPos, newBoardQueens[i].colPos);
 //                        Add shot to board
 //                    System.out.println("The legal arrow shot is: "+legalArrowShots.get(k).rowPos+"(row), "+legalArrowShots.get(k).colPos+"(col)");
                     newBoard.addArrow(legalArrowShots.get(k).rowPos, legalArrowShots.get(k).colPos);
@@ -62,8 +64,9 @@ public class SuccessorFunction {
 //                        Add copied board with move made to successors
                     stateCount ++;
                     successors.add(newBoard);
-                    int size = newBoard.arrows.size();
-                    newBoard.arrows.set(size-1,null);
+                    count++;
+//                    int size = newBoard.arrows.size();
+//                    newBoard.arrows.set(size-1,null);
                 }
             }
         }

@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import net.n3.nanoxml.IXMLElement;
@@ -40,10 +42,32 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         System.out.printf(getRooms());
         joinRoom();
 
-        SuccessorFunction sf = new SuccessorFunction();
+        System.out.println("Starting Board"+bl.toString());
 
-        bl = sf.getSuccessors(bl).get(0);
-        System.out.println("\nFirst Successor\n"+bl.toString());
+        SuccessorFunction2 sf = new SuccessorFunction2();
+        long timeold = System.currentTimeMillis();
+//        BoardLogic firstSuc = sf.getSuccessors(bl).get(0);
+//        System.out.println("\nFirst Successor" + firstSuc.toString());
+//        sf.getSuccessors(firstSuc);
+//
+//        BoardLogic secondSuc = sf.getSuccessors(firstSuc).get(0);
+//        System.out.println("\nSecond Successor" + secondSuc.toString());
+//        sf.getSuccessors(secondSuc);
+//
+//        BoardLogic thirdSuc = sf.getSuccessors(secondSuc).get(0);
+//        System.out.println("\nThird Successor" + thirdSuc.toString());
+//        sf.getSuccessors(thirdSuc);
+//
+//        BoardLogic fourthSuc = sf.getSuccessors(thirdSuc).get(0);
+//        System.out.println("\nFourth Successor" + fourthSuc.toString());
+//        sf.getSuccessors(fourthSuc);
+
+        for(BoardLogic b : sf.getSuccessors(bl)) {
+            sf.getSuccessors(b);
+        }
+        System.out.println(sf.count);
+        long timenew = System.currentTimeMillis();
+        System.out.println("Time for successors: "+(timenew-timeold));
 //
 //        MinKingDistHeuristic h = new MinKingDistHeuristic(bl);
 //        h.calculate();

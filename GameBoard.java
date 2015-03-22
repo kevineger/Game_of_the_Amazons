@@ -59,10 +59,10 @@ public class GameBoard extends JFrame {
         JLabel QueenW3 = new JLabel("Queen 2");
         JLabel QueenW4 = new JLabel("Queen 3");
      
-        JLabel QueenB1 = new JLabel(new ImageIcon("./images/nicSmallBlue.png"));
-        JLabel QueenB2 = new JLabel(new ImageIcon("./images/nicSmallBlue.png"));
-        JLabel QueenB3 = new JLabel(new ImageIcon("./images/nicSmallBlue.png"));
-        JLabel QueenB4 = new JLabel(new ImageIcon("./images/nicSmallBlue.png"));
+        JLabel QueenB1 = new JLabel(new ImageIcon("images/nicSmallBlue.png"));
+        JLabel QueenB2 = new JLabel(new ImageIcon("images/nicSmallBlue.png"));
+        JLabel QueenB3 = new JLabel(new ImageIcon("images/nicSmallBlue.png"));
+        JLabel QueenB4 = new JLabel(new ImageIcon("images/nicSmallBlue.png"));
 
         JPanel panel1 = (JPanel)Board.getComponent(friendly[0].getConcatPos());
         panel1.add(QueenW1);

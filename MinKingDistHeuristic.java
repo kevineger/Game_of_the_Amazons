@@ -51,9 +51,20 @@ public class MinKingDistHeuristic {
                 // If queen is found, increase count and break
                 if(bl.board[currentTile.rowPos][currentTile.colPos]!=null && bl.board[currentTile.rowPos][currentTile.colPos].isQueen) {
                     isFound=true;
+                    boolean enemyQueen=bl.board[currentTile.rowPos][currentTile.colPos].isOpponent;
+                    boolean contested=false;
+                    // Check if tile is contested
+                    for(LocationData shell : q) {
+                        // If a queen is found in the rest of the queue, tile is contested
+                        if(bl.board[shell.rowPos][shell.colPos]!=null && bl.board[shell.rowPos][shell.colPos].isQueen && !bl.board[shell.rowPos][shell.colPos].isOpponent==enemyQueen)
+                            contested=true;
+                    }
+                    if(contested)
+                        break;
                     // Determine who's queen it is, increase count accordingly
                     if(bl.board[currentTile.rowPos][currentTile.colPos].isOpponent) ownedByThem++;
                     else ownedByUs++;
+                    // If element is the last in the queue (ie: current 'layer') then break
                     break;
                 }
                 // If not a queen, mark location as checked

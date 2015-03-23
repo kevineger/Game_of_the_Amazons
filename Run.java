@@ -17,17 +17,19 @@ public class Run {
         for(int i=9; i>=0; i--) {
             arrows.add(new Arrow(i,9-i));
         }
-        for (int i = 0; i < 10; i++) {
-//            arrows.add(new Arrow(0,i));
-        }
 
-        BoardLogic B2 = new BoardLogic(enemies, friendly, arrows);
+        BoardLogic B = new BoardLogic(enemies, friendly, arrows);
 //        System.out.println("Filled test board:"+B.toString());
 
 
-        BoardLogic B = new BoardLogic(true);
+//        BoardLogic B = new BoardLogic(true);
         SearchNode S = new SearchNode(B);
         SearchTree T = new SearchTree(S);
+
+        MinKingDistHeuristic h = new MinKingDistHeuristic(B);
+        h.calculate();
+        System.out.println("Owned by Us: "+h.ownedByUs);
+        System.out.println("Owned by Them: "+h.ownedByThem);
 
         T.test2();
 

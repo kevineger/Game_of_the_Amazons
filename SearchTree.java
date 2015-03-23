@@ -91,7 +91,6 @@ public class SearchTree {
         if(D == 0) {
             evaluations++;
             N.setHeuristicValue();
-            System.out.println(N.getValue());
             return N.getValue();
         }
 
@@ -183,7 +182,8 @@ public class SearchTree {
         System.out.println("starting second level two generation");
         expandFrontier();
         System.out.println("Frontier Size before: "+frontier.size());
-        trimFrontier();
+//        trimFrontier();
+        StartAlphaBeta();
         System.out.println("Frontier Size after: " + frontier.size());
 
 

@@ -50,7 +50,7 @@ public class SuccessorFunction2 {
                 }
             }
         }
-        System.out.println("Total States: " + stateCount);
+//        System.out.println("Total States: " + stateCount);
         return successors;
     }
 
@@ -96,7 +96,7 @@ public class SuccessorFunction2 {
                 }
             }
         }
-        System.out.println("Total States: " + stateCount);
+//        System.out.println("Total States: " + stateCount);
         return successors;
     }
 }

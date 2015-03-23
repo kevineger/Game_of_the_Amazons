@@ -17,7 +17,7 @@ public class BoardLogic {
 	 * creates a board depending on whether we are the starting player or not
 	 * with top left corner being coordinate (0,0) and bottom right (9,9)
 	 *
-	 * @param start true if we are first to move
+	 * @param start true if we are first to move, false otherwise
 	 */
 	protected BoardLogic(boolean start) {
 		if (start) {

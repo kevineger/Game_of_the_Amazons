@@ -6,27 +6,64 @@ import java.util.ArrayList;
  */
 public class SearchNode {
 
-    private moveData queenMove;
+    protected SearchNode parent;
+    private move queenMove;
     private Arrow arrowShot;
-    private BoardLogic B;
+    protected BoardLogic B;
     private Integer value = 0;
     private ArrayList<SearchNode> children = new ArrayList<SearchNode>();
     private MinKingDistHeuristic heuristic;
-    private SuccessorFunction funct = new SuccessorFunction();
+    private SuccessorFunction2 funct = new SuccessorFunction2();
 
     /**
-     * creates a search node from a board and an evaluation
-     * @param board
+     * search node used for determining a move with all values being instantiated
+     * @param P parent of this search node
+     * @param board game state
+     * @param M queen move
+     * @param A arrow show
      * @param heuristicValue
      */
-    public SearchNode(BoardLogic board, int heuristicValue){
+    public SearchNode(SearchNode P,BoardLogic board,move M, Arrow A, int heuristicValue){
+        parent = P;
         B = board;
+        queenMove = M;
+        arrowShot = A;
+        value = heuristicValue;
+        heuristic = new MinKingDistHeuristic(board);
+
+
+    }
+
+    /**
+     * search node used for determining a move with all values being instantiated
+     * @param board game state
+     * @param M queen move
+     * @param A arrow show
+     * @param heuristicValue
+     */
+    public SearchNode(BoardLogic board,move M, Arrow A, int heuristicValue){
+        B = board;
+        queenMove = M;
+        arrowShot = A;
         value = heuristicValue;
         heuristic = new MinKingDistHeuristic(board);
     }
 
     /**
-     * creates a node with only a baord, value to be set later
+     * search node with hueristic value to be set later
+     * @param board game state
+     * @param M queen move
+     * @param A arrow show
+     */
+    public SearchNode(BoardLogic board,move M, Arrow A){
+        B = board;
+        queenMove = M;
+        arrowShot = A;
+        heuristic = new MinKingDistHeuristic(board);
+    }
+
+    /**
+     * construtor used to set root of search tree
      * @param board
      */
     public SearchNode(BoardLogic board){
@@ -34,17 +71,27 @@ public class SearchNode {
         heuristic = new MinKingDistHeuristic(board);
     }
 
-
     /**
-     * instantiates the list of children of this board state
+     * instantiates the list of children of this board state expanding the frontier and returning it
      */
-    public void expand(){
-        SuccessorFunction funct = new SuccessorFunction();
-        ArrayList<BoardLogic> expanded = funct.getSuccessors(B);
+    public ArrayList<SearchNode> setAllChildren(boolean Move){
 
-        for(BoardLogic child:expanded){
-            children.add(new SearchNode(child));
+        if(Move) {
+            ArrayList<SearchNode> expanded = funct.getSuccessors(B);
+            for (SearchNode S: expanded){
+                S.setParent(this);
+                children.add(S);
+            }
+            return children;
+        }else{
+            ArrayList<SearchNode> expanded = funct.enemySuccesor(B);
+            for (SearchNode S: expanded) {
+                S.setParent(this);
+                children.add(S);
+            }
+            return children;
         }
+
     }
 
     /**
@@ -59,21 +106,8 @@ public class SearchNode {
      * returns the move that got to this gamestate
      * @return
      */
-    public moveData getMove(){
+    public move getMove(){
         return queenMove;
-    }
-
-    /**
-     * adds all children of the game state
-     */
-    public void setAllChildren(){
-        ArrayList<BoardLogic> kids = funct.getSuccessors(B);
-
-        for(BoardLogic b:kids){
-            System.out.println(b.toString());
-            children.add(new SearchNode(b));
-        }
-
     }
 
     /**
@@ -91,6 +125,14 @@ public class SearchNode {
     public int getValue(){
         this.B.toString();
         return value;
+    }
+
+    /**
+     * sets the parent of the node for use in set all children
+     * @param S
+     */
+    public void setParent(SearchNode S){
+        parent = S;
     }
 
     /**

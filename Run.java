@@ -1,20 +1,13 @@
-import ubco.ai.games.Amazon;
-import ubco.ai.games.GameClient;
-
-import java.util.ArrayList;
-
 
 public class Run {
 //    Testing run
 
     public static void main(String[] args) {
 
-//        BoardLogic B = new BoardLogic(false);
-//        SearchNode S = new SearchNode(B);
-//        SearchTree T = new SearchTree(S);
-//
-//        T.test2();
+        BoardLogic B = new BoardLogic(false);
+        SearchNode S = new SearchNode(B);
+        SearchTree T = new SearchTree(S);
 
-        GamePlayer gp = new GamePlayer("1","");
+        T.test2();
     }
 }

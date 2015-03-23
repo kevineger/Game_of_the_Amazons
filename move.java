@@ -14,7 +14,7 @@ public class move {
      * @param x column position of a piece
      * @param y row position of a piece
      */
-    public move(int x, int y, GamePiece Q){
+    public move(int y, int x, GamePiece Q){
         newColPos = x;
         newRowPos= y;
         oldColPos = Q.colPos;

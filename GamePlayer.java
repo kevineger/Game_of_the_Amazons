@@ -62,8 +62,8 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 //        System.out.println("\nFourth Successor" + fourthSuc.toString());
 //        sf.getSuccessors(fourthSuc);
 
-        for(BoardLogic b : sf.getSuccessors(bl)) {
-            sf.getSuccessors(b);
+        for(SearchNode b : sf.getSuccessors(bl)) {
+            sf.getSuccessors(b.B);
         }
         System.out.println(sf.count);
         long timenew = System.currentTimeMillis();

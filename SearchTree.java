@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Created by TCulo_000 on 2015-03-12.
  */
@@ -5,10 +7,12 @@ public class SearchTree {
     private SearchNode root;
     private int depth;
     public static int evaluations;
+    public ArrayList<SearchNode> frontier = new ArrayList<SearchNode>();
 
     public SearchTree(SearchNode N){
-        evaluations = 0;
         root = N;
+        evaluations = 0;
+        calculateDepth();
     }
 
     private void calculateDepth(){
@@ -27,6 +31,52 @@ public class SearchTree {
 
     public SearchNode getRoot(){
         return root;
+    }
+
+    /**
+     * expands the frontier of the tree depending on the depth will do a MIN or MAX move
+     */
+    public void expandFrontier(){
+        ArrayList<SearchNode> newFrontier = new ArrayList<SearchNode>();
+        if(depth % 2 ==0){
+            for(SearchNode S: frontier)
+                newFrontier.addAll(S.setAllChildren(true));
+        }else{
+            for(SearchNode S: frontier)
+                newFrontier.addAll(S.setAllChildren(false));
+        }
+
+        //clearing the old frontier and setting the new one
+        frontier.clear();
+        frontier.addAll(newFrontier);
+        depth++;
+
+//        trimFrontier();
+    }
+
+
+    /**
+     * removes all nodes in the frontier that are less than the average heuristic value
+     */
+    public void trimFrontier(){
+        Double avg = 0.0;
+        for (SearchNode S: frontier){
+            S.setHeuristicValue();
+            avg += S.getValue();
+        }
+
+        avg = avg/frontier.size();
+        ArrayList<SearchNode> toRemove = new ArrayList<SearchNode>();
+        for(SearchNode S: frontier){
+            if(S.getValue() < avg){
+                toRemove.add(S);
+            }
+        }
+
+        for(SearchNode S: toRemove){
+            frontier.remove(S);
+            S.parent.getChildren().remove(S);
+        }
     }
 
     public void StartAlphaBeta(){
@@ -78,19 +128,19 @@ public class SearchTree {
     public void test1(){
         System.out.println("Starting test 1 for frontier of increasing heuristic val 1-75");
         for (int i = 0; i < 3; i++) {
-            root.getChildren().add(new SearchNode(null));
+            root.getChildren().add(new SearchNode(null,null,null));
         }
 
         for(SearchNode S: root.getChildren()){
             for (int i = 0; i < 3; i++) {
-                S.getChildren().add(new SearchNode(null));
+                S.getChildren().add(new SearchNode(null,null,null));
             }
         }
 
         for (SearchNode S: root.getChildren()) {
             for(SearchNode H: S.getChildren()) {
                 for (int i = 0; i < 3; i++) {
-                    H.getChildren().add(new SearchNode(null));
+                    H.getChildren().add(new SearchNode(null,null,null));
                 }
             }
         }
@@ -100,7 +150,7 @@ public class SearchTree {
             for(SearchNode H: S.getChildren()) {
                 for(SearchNode G: H.getChildren()){
                     for (int i = 0; i <3 ; i++) {
-                        G.getChildren().add(new SearchNode(null, j));
+                        G.getChildren().add(new SearchNode(null,null,null, j));
                         j++;
                     }
                 }
@@ -120,17 +170,19 @@ public class SearchTree {
     }
 
     public void test2(){
-        System.out.println("Starting test 2 for a tree of actual game data of depth 2");
+        System.out.println("Starting test2 for expanding with frontier array list");
+        System.out.println("----------------------------");
+        frontier.addAll(root.setAllChildren(true));
+        System.out.println("Frontier Size before: "+frontier.size());
+        trimFrontier();
+        System.out.println("Frontier Size after: " + frontier.size());
+        System.out.println("----------------------------");
+//        System.out.println("starting second level two generation");
+//        expandFrontier();
+//        System.out.println("Frontier Size before: "+frontier.size());
+//        trimFrontier();
+//        System.out.println("Frontier Size after: " + frontier.size());
 
-        root.setAllChildren();
-//        for(SearchNode S: root.getChildren()){
-//            S.setAllChildren();
-//        }
-        evaluations = 0;
-
-        System.out.println("Starting Alpha-Beta");
-        this.StartAlphaBeta();
-        System.out.println("Nodes Evaluated: " +evaluations);
 
     }
 }

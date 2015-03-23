@@ -5,9 +5,10 @@ import java.util.ArrayList;
 
 
 public class Run {
-//    Testing run
 
     public static void main(String[] args) {
+
+        /*
 
         Queen[] friendly = new Queen[4];
         Queen[] enemies = new Queen[4];
@@ -23,7 +24,6 @@ public class Run {
         }
 
         BoardLogic B = new BoardLogic(enemies, friendly, arrows);
-//        System.out.println("Filled test board:"+B.toString());
 
 
 //        BoardLogic B = new BoardLogic(true);
@@ -31,7 +31,10 @@ public class Run {
         SearchTree T = new SearchTree(S);
 
         T.test2();
-        
+
+        */
+
+
         //Random Player Test
         
         GamePlayer gp = new GamePlayer("4","");

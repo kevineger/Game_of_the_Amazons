@@ -1,13 +1,8 @@
-import java.util.ArrayList;
 import java.util.Random;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import net.n3.nanoxml.IXMLElement;
+import ubco.ai.GameRoom;
 import ubco.ai.connection.ServerMessage;
 import ubco.ai.games.GameClient;
 import ubco.ai.games.GameMessage;
@@ -234,7 +229,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         String newPos = "" + q.rowPos + " " + q.colPos;
 
         // now, choose a random arrowshot that the moved queen can perform
-        Arrow a = bl.getArrowShots(q).get(r.nextInt(bl.getArrowShots(q).size()));
+        Arrow a = bl.getArrowShots(q.rowPos,q.colPos).get(r.nextInt(bl.getArrowShots(q.rowPos,q.colPos).size()));
         System.out.println("Our Randomly chosen arrow location is: " + a.toString());
         String arrowPos = "" + a.rowPos + " " + a.colPos;
 

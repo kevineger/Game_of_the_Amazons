@@ -43,18 +43,18 @@ public class MinKingDistHeuristic {
         // Initialize the queue
         Queue<LocationData> q = new LinkedList<>();
         q = addNeighbours(q, row, col, checked);
-        outerloop:
         while(!isFound) {
             Queue<LocationData> tempQ = new LinkedList<>();
-            for(int i=0; i<q.size(); i++) {
-                LocationData currentTile = q.remove();
+            int index = q.size();
+            for(int i=0; i<index; i++) {
+                LocationData currentTile = q.poll();
                 // If queen is found, increase count and break
                 if(bl.board[currentTile.rowPos][currentTile.colPos]!=null && bl.board[currentTile.rowPos][currentTile.colPos].isQueen) {
                     isFound=true;
                     // Determine who's queen it is, increase count accordingly
                     if(bl.board[currentTile.rowPos][currentTile.colPos].isOpponent) ownedByThem++;
                     else ownedByUs++;
-                    break outerloop;
+                    break;
                 }
                 // If not a queen, mark location as checked
                 else checked[currentTile.rowPos][currentTile.colPos]=true;
@@ -71,49 +71,57 @@ public class MinKingDistHeuristic {
         // If has l
         if(col>0) {
             LocationData lData = new LocationData(row,col-1);
-            q.add(lData);
+            if(!checked[row][col-1])
+                q.add(lData);
         }
 
         // If has l/u
         if(row>0 && col>0) {
             LocationData luData = new LocationData(row-1,col-1);
-            q.add(luData);
+            if(!checked[row-1][col-1])
+                q.add(luData);
         }
 
         // If has u
         if(row>0) {
             LocationData uData = new LocationData(row-1,col);
-            q.add(uData);
+            if(!checked[row-1][col])
+                q.add(uData);
         }
 
         // If has r/u
         if(row>0 && col<9) {
             LocationData ruData = new LocationData(row-1,col+1);
-            q.add(ruData);
+            if(!checked[row-1][col+1])
+                q.add(ruData);
         }
 
         // If has r
         if(col<9) {
             LocationData rData = new LocationData(row,col+1);
-            q.add(rData);
+            if(!checked[row][col+1])
+                q.add(rData);
         }
 
         // If has r/d
         if(row<9 && col<9) {
             LocationData rdData = new LocationData(row+1,col+1);
-            q.add(rdData);
+            if(!checked[row+1][col+1])
+                q.add(rdData);
         }
 
         // If has d
         if(row<9) {
             LocationData dData = new LocationData(row+1,col);
-            q.add(dData);
+            if(!checked[row+1][col])
+                q.add(dData);
         }
 
         // If has l/d
         if(row<9 && col>0) {
             LocationData ldData = new LocationData(row+1,col-1);
-            q.add(ldData);
+            if(!checked[row+1][col-1])
+                q.add(ldData);
         }
 
         return q;

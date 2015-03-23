@@ -223,7 +223,7 @@ public class BoardLogic {
     }
 
     /**
-     * @param G
+     *
      * @return list of legal arrow shots from queen G
      */
     protected ArrayList<Arrow> getArrowShots(int y, int x) {

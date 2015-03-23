@@ -60,12 +60,14 @@ public class SearchTree {
      */
     public void trimFrontier(){
         Double avg = 0.0;
+        System.out.println("Frontier size:"+frontier.size());
         for (SearchNode S: frontier){
             S.setHeuristicValue();
             avg += S.getValue();
         }
 
         avg = avg/frontier.size();
+        System.out.println("Average is: "+avg);
         ArrayList<SearchNode> toRemove = new ArrayList<SearchNode>();
         for(SearchNode S: frontier){
             if(S.getValue() < avg){
@@ -172,16 +174,17 @@ public class SearchTree {
     public void test2(){
         System.out.println("Starting test2 for expanding with frontier array list");
         System.out.println("----------------------------");
+        System.out.println("Root: " + root.B.toString());
         frontier.addAll(root.setAllChildren(true));
         System.out.println("Frontier Size before: "+frontier.size());
         trimFrontier();
         System.out.println("Frontier Size after: " + frontier.size());
         System.out.println("----------------------------");
-//        System.out.println("starting second level two generation");
-//        expandFrontier();
-//        System.out.println("Frontier Size before: "+frontier.size());
-//        trimFrontier();
-//        System.out.println("Frontier Size after: " + frontier.size());
+        System.out.println("starting second level two generation");
+        expandFrontier();
+        System.out.println("Frontier Size before: "+frontier.size());
+        trimFrontier();
+        System.out.println("Frontier Size after: " + frontier.size());
 
 
     }

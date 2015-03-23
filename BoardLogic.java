@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.util.ArrayList;
 
 public class BoardLogic {
@@ -10,15 +9,14 @@ public class BoardLogic {
     protected  ArrayList<Arrow> arrows;
 	private  ArrayList<moveData> legalArrowShots;
 	private  ArrayList<moveData> legalQueenMoves;
-
 //    GameBoard frame = null;
     Board frame = null;
 
 	/**
 	 * creates a board depending on whether we are the starting player or not
 	 * with top left corner being coordinate (0,0) and bottom right (9,9)
-	 * 
-	 * @param start true if we are first to move
+	 *
+	 * @param start true if we are first to move, false otherwise
 	 */
 	protected BoardLogic(boolean start) {
 		if (start) {
@@ -53,7 +51,6 @@ public class BoardLogic {
 			friendly = new Queen[] { (Queen) board[0][3], (Queen) board[0][6], (Queen) board[3][0], (Queen) board[3][9] };
 			enemies = new Queen[] { (Queen) board[6][0], (Queen) board[6][9], (Queen) board[9][3],	(Queen) board[9][6] };
 		}
-
         //		Start GUI
 //        frame = new Board();
 //        frame.setVisible(true);
@@ -67,7 +64,7 @@ public class BoardLogic {
 	/**
 	 * sets a board that is equal to another board to be used in successor
 	 * function when we get there
-	 * 
+	 *
 	 * @param newBoard the board state we wish to create
 	 */
 	protected BoardLogic(GamePiece[][] newBoard) {
@@ -97,7 +94,7 @@ public class BoardLogic {
 
 	/**
 	 * returns the list of all opponent pieces on the board
-	 * 
+	 *
 	 * @return array of enemy GamePieces(have position variables)
 	 */
 	protected Queen[] getEnemies() {
@@ -106,7 +103,7 @@ public class BoardLogic {
 
 	/**
 	 * returns the list of all your pieces on the board
-	 * 
+	 *
 	 * @return array of friendly GamePieces(have position variables)
 	 */
 	protected Queen[] getFriendly() {
@@ -377,7 +374,7 @@ public class BoardLogic {
 	/**
 	 * method used to update where we can shoot after an amazon is moved or arrow shot
 	 */
-	private void updateLegalQueenMoves(){
+	public void updateLegalQueenMoves(){
 		legalQueenMoves.clear();
 		for(GamePiece G : friendly){
 			legalQueenMoves.addAll(getQueenMoves(G));

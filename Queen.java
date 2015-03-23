@@ -27,9 +27,9 @@ public class Queen extends GamePiece {
     public String toString(){
         String str;
         if(isOpponent)
-            str = "Enemy Queen";
+            str = "Enemy Queen at row " + rowPos + " column " + colPos;
         else
-            str = "Our Queen";
+            str = "Our Queen at row " + rowPos + " column " + colPos;
 
         return str;
     }

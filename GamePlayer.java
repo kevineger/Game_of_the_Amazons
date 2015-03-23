@@ -140,14 +140,14 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 break;
             case GameMessage.ACTION_MOVE:
                 System.out.println("Message Type: ACTION_MOVE");
-                IXMLElement queen = xml.getChildAtIndex(0);
-                String queen_move = queen.getAttribute("move", null);            // queen_move is the value of the opponent's move
-                IXMLElement arrow = xml.getChildAtIndex(1);
-                String arrow_move = arrow.getAttribute("move", null);            // arrow_move is the value of the opponent's arrow
-                System.out.println("Queen Move: " + queen_move);
-                System.out.println("Arrow Move: " + arrow_move);
-                // Update the current board with the new board state
-                // Then, create new set of viable moves (for arrows and queens)
+//                IXMLElement queen = xml.getChildAtIndex(0);
+//                String queen_move = queen.getAttribute("move", null);            // queen_move is the value of the opponent's move
+//                IXMLElement arrow = xml.getChildAtIndex(1);
+//                String arrow_move = arrow.getAttribute("move", null);            // arrow_move is the value of the opponent's arrow
+//                System.out.println("Queen Move: " + queen_move);
+//                System.out.println("Arrow Move: " + arrow_move);
+//                // Update the current board with the new board state
+//                // Then, create new set of viable moves (for arrows and queens)
                 break;
             case GameMessage.ACTION_POS_MARKED:
                 System.out.println("Message Type: ACTION_POS_MARKED");
@@ -166,6 +166,12 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 String arrow_move1 = arrow1.getAttribute("move", null);            // arrow_move is the value of the opponent's arrow
                 System.out.println("Queen Move: " + queen_move1);
                 System.out.println("Arrow Move: " + arrow_move1);
+
+                translateIn(queen_move1);
+                translateArrowIn(arrow_move1);
+                bl.updateAfterMove();
+                randomMove(bl);
+
                 // Update the current board with the new board state
                 // Then, create new set of viable moves (for arrows and queens)
                 break;
@@ -244,7 +250,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         System.out.println("New Queen Position: " + newPos);
         System.out.println("Using the translator:" + translateOut(m));
         System.out.println("New Arrow Location: " + arrowPos);
-        System.out.println("Using the translator:" + a.translate());
+        System.out.println("Using the translator:" + translateArrowOut(a));
 
         try {
             Thread.sleep(1000);                 //1000 milliseconds is one second.
@@ -252,8 +258,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
             Thread.currentThread().interrupt();
         }
 
-        sendToServer(GameMessage.MSG_GAME, roomID, translateOut(m), a.translate());
-
+        sendToServer(GameMessage.MSG_GAME, roomID, translateOut(m), translateArrowOut(a));
         return b;
 
 
@@ -498,8 +503,139 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 break;
         }
 
+        for (Queen q: bl.getFriendly()) {
+            if (q.colPos == oldCol && q.rowPos == oldRow) {
+                q.move(newRow, newCol);
+            }
+        }
         move moveMessage = new move(newCol, newRow, oldCol, oldRow);
 
         System.out.println(moveMessage.toString());
+    }
+
+
+
+    public String translateArrowOut(Arrow a) {
+
+        String oldCol = "";
+        int oldRow = 0;
+        int x = a.colPos;
+        int y = a.rowPos;
+        switch(x){
+            case 0: oldCol = "a";
+                break;
+            case 1: oldCol = "b";
+                break;
+            case 2: oldCol = "c";
+                break;
+            case 3: oldCol = "d";
+                break;
+            case 4: oldCol = "e";
+                break;
+            case 5: oldCol = "f";
+                break;
+            case 6: oldCol = "g";
+                break;
+            case 7: oldCol = "h";
+                break;
+            case 8: oldCol = "i";
+                break;
+            case 9: oldCol = "j";
+                break;
+            default:
+                System.out.println("Invalid col position");;
+                break;
+        }
+        switch(y){
+            case 0: oldRow = 9;
+                break;
+            case 1: oldRow = 8;
+                break;
+            case 2: oldRow = 7;
+                break;
+            case 3: oldRow = 6;
+                break;
+            case 4: oldRow = 5;
+                break;
+            case 5: oldRow = 4;
+                break;
+            case 6: oldRow = 3;
+                break;
+            case 7: oldRow = 2;
+                break;
+            case 8: oldRow = 1;
+                break;
+            case 9: oldRow = 0;
+                break;
+            default:
+                System.out.println("Invalid row position");;
+                break;
+        }
+        return oldCol + oldRow;
+    }
+
+
+    public void translateArrowIn(String move) {
+
+        char x = move.charAt(0);
+        char y = move.charAt(1);
+
+        int oldCol = -1;
+        int oldRow = -1;
+
+
+        switch(x){
+            case 'a': oldCol = 0;
+                break;
+            case 'b': oldCol = 1;
+                break;
+            case 'c': oldCol = 2;
+                break;
+            case 'd': oldCol = 3;
+                break;
+            case 'e': oldCol = 4;
+                break;
+            case 'f': oldCol = 5;
+                break;
+            case 'g': oldCol = 6;
+                break;
+            case 'h': oldCol = 7;
+                break;
+            case 'i': oldCol = 8;
+                break;
+            case 'j': oldCol = 9;
+                break;
+            default:
+                System.out.println("Invalid col position");;
+                break;
+        }
+        switch(y){
+            case '0': oldRow = 9;
+                break;
+            case '1': oldRow = 8;
+                break;
+            case '2': oldRow = 7;
+                break;
+            case '3': oldRow = 6;
+                break;
+            case '4': oldRow = 5;
+                break;
+            case '5': oldRow = 4;
+                break;
+            case '6': oldRow = 3;
+                break;
+            case '7': oldRow = 2;
+                break;
+            case '8': oldRow = 1;
+                break;
+            case '9': oldRow = 0;
+                break;
+            default:
+                System.out.println("Invalid row position");;
+                break;
+
+        }
+        Arrow a = new Arrow(oldRow, oldCol);
+        bl.addArrow(a);
     }
 }

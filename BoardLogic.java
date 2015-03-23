@@ -9,7 +9,6 @@ public class BoardLogic {
     protected  ArrayList<Arrow> arrows;
 	private  ArrayList<moveData> legalArrowShots;
 	private  ArrayList<moveData> legalQueenMoves;
-
 //    GameBoard frame = null;
     Board frame = null;
 
@@ -52,7 +51,6 @@ public class BoardLogic {
 			friendly = new Queen[] { (Queen) board[0][3], (Queen) board[0][6], (Queen) board[3][0], (Queen) board[3][9] };
 			enemies = new Queen[] { (Queen) board[6][0], (Queen) board[6][9], (Queen) board[9][3],	(Queen) board[9][6] };
 		}
-
         //		Start GUI
 //        frame = new Board();
 //        frame.setVisible(true);

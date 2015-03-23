@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -32,25 +33,14 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         //A player has to maintain an instance of GameClient, and register itself with the
         //GameClient. Whenever there is a message from the server, the Gameclient will invoke
         //the player's handleMessage() method.
-//        bl = new BoardLogic(true);             we will need to create the board when we know whether we are W or B
-
         //Three arguments: user name (any), passwd (any), this (delegate)
+
         teamName = name;
         role = "";
 
         gameClient = new GameClient(name, passwd, this);
         System.out.printf(getRooms());
         joinRoom();
-
-//        SuccessorFunction sf = new SuccessorFunction();
-
-//        bl = sf.getSuccessors(bl).get(0);
-//        System.out.println("\nFirst Successor\n"+bl.toString());
-//
-//        MinKingDistHeuristic h = new MinKingDistHeuristic(bl);
-//        h.calculate();
-//        System.out.println("Owned by Us: "+h.ownedByUs);
-//        System.out.println("Owned by Them: "+h.ownedByThem);
     }
 
     //	Gets room list
@@ -77,11 +67,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 break;
             }
         }
-
-//        String msg = "";
-//        msg = "<action type='" + GameMessage.MSG_CHAT + "'>" + "Testing a chat message yo" + "</action>";
-//        String messageToSend = ServerMessage.compileGameMessage(GameMessage.MSG_CHAT, 8, msg);
-//        gameClient.sendToServer(messageToSend);
     }
 
     //general message from the server
@@ -125,6 +110,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 
                     // instead, we perform a random move
                     bl = randomMove(bl);
+                    System.out.println(bl.toString());
 
                     // now, we would call our heuristic on our successor function, and obtain the board we want to use
 //                    bl = sf.getSuccessors(bl).get(0);               // or whatever board we define as the best
@@ -135,19 +121,12 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 }
                 else {
                     bl = new BoardLogic(false);
+                    System.out.println(bl.toString());
                     // now, we will wait for a message from opponent, and deal with it as such
                 }
                 break;
             case GameMessage.ACTION_MOVE:
                 System.out.println("Message Type: ACTION_MOVE");
-//                IXMLElement queen = xml.getChildAtIndex(0);
-//                String queen_move = queen.getAttribute("move", null);            // queen_move is the value of the opponent's move
-//                IXMLElement arrow = xml.getChildAtIndex(1);
-//                String arrow_move = arrow.getAttribute("move", null);            // arrow_move is the value of the opponent's arrow
-//                System.out.println("Queen Move: " + queen_move);
-//                System.out.println("Arrow Move: " + arrow_move);
-//                // Update the current board with the new board state
-//                // Then, create new set of viable moves (for arrows and queens)
                 break;
             case GameMessage.ACTION_POS_MARKED:
                 System.out.println("Message Type: ACTION_POS_MARKED");
@@ -170,8 +149,10 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 translateIn(queen_move1);
                 translateArrowIn(arrow_move1);
                 bl.updateAfterMove();
-                randomMove(bl);
-
+                System.out.println(bl.toString());
+                bl = randomMove(bl);
+                bl.updateAfterMove();
+                System.out.println(bl.toString());
                 // Update the current board with the new board state
                 // Then, create new set of viable moves (for arrows and queens)
                 break;
@@ -221,19 +202,32 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         // first we randomly choose a friendly queen, q
         Queen q = b.getFriendly()[r.nextInt(4)];
         System.out.println("Our randomly chosen queen is " + q.toString());
-        originalPos =  "" + q.colPos + " " + q.rowPos;
 
+        move m =null;
         // Chooses the random move that queen q will make
-        moveData md = b.getLegalMoves(q).get(r.nextInt(b.getLegalMoves(q).size()));
-
-        // Since board.getLegalMoves returns a moveData, we need to convert it to a move
-        move m = new move(md.colPos, md.rowPos, md.Q.colPos, md.Q.rowPos);
-
-        System.out.println("Our randomly chosen move is " + m);
+        if(b.getLegalMoves(q).size()==0){
+            for(Queen e : b.getFriendly()){
+                if(b.getLegalMoves(e).size()!=0) {
+                    // Since board.getLegalMoves returns a moveData, we need to convert it to a move
+                    moveData md = b.getLegalMoves(e).get(r.nextInt(b.getLegalMoves(e).size()));
+                    m = new move(md.colPos, md.rowPos, md.Q.colPos, md.Q.rowPos);
+                    System.out.println("Our randomly chosen move is " + m);
+                    q.move(md.rowPos, md.colPos);
+                    break;
+                }
+            }
+        }
+        else{
+            // Since board.getLegalMoves returns a moveData, we need to convert it to a move
+            moveData md = b.getLegalMoves(q).get(r.nextInt(b.getLegalMoves(q).size()));
+            m = new move(md.colPos, md.rowPos, md.Q.colPos, md.Q.rowPos);
+            System.out.println("Our randomly chosen move is " + m);
+            q.move(md.rowPos, md.colPos);
+        }
 
         // then we move q to a random legal place on the board
-        q.move(md.rowPos, md.colPos);       // may want to change this to m (move) instead of md (moveData
-        bl.updateLegalQueenMoves();
+             // may want to change this to m (move) instead of md (moveData
+        bl.updateAfterMove();
         String newPos = "" + q.rowPos + " " + q.colPos;
 
         // now, choose a random arrowshot that the moved queen can perform
@@ -246,17 +240,17 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         // at last, we update the board and GUI
         bl.updateAfterMove();
 
-        System.out.println("Original Queen Position: " + originalPos);
+        //System.out.println("Original Queen Position: " + originalPos);
         System.out.println("New Queen Position: " + newPos);
         System.out.println("Using the translator:" + translateOut(m));
         System.out.println("New Arrow Location: " + arrowPos);
         System.out.println("Using the translator:" + translateArrowOut(a));
 
-        try {
-            Thread.sleep(1000);                 //1000 milliseconds is one second.
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+//        try {
+//            Thread.sleep(10000);                 //1000 milliseconds is one second.
+//        } catch(InterruptedException ex) {
+//            Thread.currentThread().interrupt();
+//        }
 
         sendToServer(GameMessage.MSG_GAME, roomID, translateOut(m), translateArrowOut(a));
         return b;
@@ -382,6 +376,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 System.out.println("Invalid row position");;
                 break;
         }
+
         move = move.concat(oldCol+oldRow+"-"+newCol+newRow);
         return move;
 
@@ -503,7 +498,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 break;
         }
 
-        for (Queen q: bl.getFriendly()) {
+        for (Queen q: bl.getEnemies()) {
             if (q.colPos == oldCol && q.rowPos == oldRow) {
                 q.move(newRow, newCol);
             }

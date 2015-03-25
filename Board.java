@@ -108,10 +108,10 @@ public class Board extends JPanel
      * Updates the board's display based on a move action.
      *
      */
-    public void update (move queenMove, moveData arrowShot, boolean isEnemy)
+    public void update (move queenMove, Arrow a, boolean isBlack)
     {
         ImageIcon queen = null;
-        if(isEnemy) {
+        if(isBlack) {
             queen = blackQueen;
         }
         else {
@@ -119,6 +119,6 @@ public class Board extends JPanel
         }
         board[queenMove.oldRowPos][queenMove.oldColPos].setIcon(null);
         board[queenMove.newRowPos][queenMove.newColPos].setIcon(queen);
-        board[arrowShot.rowPos][arrowShot.colPos].setIcon(arrowMark);
+        board[a.rowPos][a.colPos].setIcon(arrowMark);
     }
 }

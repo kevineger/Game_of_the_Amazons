@@ -40,11 +40,11 @@ public class Run {
         GamePlayer gp = new GamePlayer("4","");
 
         try {
-            Thread.sleep(2000);                 //1000 milliseconds is one second.
+            Thread.sleep(2000);
         } catch(InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
 
-        GamePlayer gp2 = new GamePlayer("5", "5");
+//        GamePlayer gp2 = new GamePlayer("5", "5");
     }
 }

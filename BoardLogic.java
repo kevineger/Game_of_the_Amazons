@@ -19,7 +19,7 @@ public class BoardLogic {
 	 * @param start true if we are first to move, false otherwise
 	 */
 	protected BoardLogic(boolean start) {
-		if (start) {
+		if (!start) {
 			board = new GamePiece[][] {
 					{ null, null, null, new Queen(0, 3, true), null, null, new Queen(0, 6, true), null, null, null },
 					{ null, null, null, null, null, null, null, null, null, null },
@@ -51,9 +51,6 @@ public class BoardLogic {
 			friendly = new Queen[] { (Queen) board[0][3], (Queen) board[0][6], (Queen) board[3][0], (Queen) board[3][9] };
 			enemies = new Queen[] { (Queen) board[6][0], (Queen) board[6][9], (Queen) board[9][3],	(Queen) board[9][6] };
 		}
-        //		Start GUI
-//        frame = new Board();
-//        frame.setVisible(true);
 
         arrows = new ArrayList<>();
         legalArrowShots = new ArrayList<>();
@@ -434,13 +431,6 @@ public class BoardLogic {
                 board[i][j] = null;
             }
         }
-    }
-
-    /**
-     * repaints the gui
-     */
-    protected void updateBoard(move queenMove, moveData arrowShot, boolean isEnemy) {
-        frame.update(queenMove, arrowShot, isEnemy);
     }
 
     /**

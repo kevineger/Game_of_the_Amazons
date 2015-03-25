@@ -449,7 +449,7 @@ public class BoardLogic {
      * @return false == still playing
      */
     protected boolean goalTest(){
-        if(enemyHasMove == false || legalQueenMoves.size() == 0)
+        if(legalQueenMoves.size() == 0)
             return true;
         else
             return false;
@@ -458,19 +458,6 @@ public class BoardLogic {
 
 	@Override
     public String toString(){
-//		String str = "Current board:\n";
-//		if(board != null){
-//			for(int i = 0; i <= 9; i++){
-//				str+= "\n";
-//				for(int j = 0; j <= 9; j++){
-//					str += String.format("%-11s", board[i][j]);
-//				}
-//				str += "\n";
-//			}
-//		}else
-//			str += "is null";
-//
-//		return str;
         String s = "\n";
         String line = "\no--- --- --- --- --- --- --- --- --- ---o";
         for(int i=0; i<10; i++) {

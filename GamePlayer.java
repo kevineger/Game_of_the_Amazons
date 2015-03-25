@@ -1,7 +1,6 @@
 import java.util.Random;
 import java.util.Scanner;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import net.n3.nanoxml.IXMLElement;
 import ubco.ai.GameRoom;
 import ubco.ai.connection.ServerMessage;
@@ -30,10 +29,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
      */
     public GamePlayer(String name, String passwd) {
 
-        //A player has to maintain an instance of GameClient, and register itself with the
-        //GameClient. Whenever there is a message from the server, the Gameclient will invoke
-        //the player's handleMessage() method.
-        //Three arguments: user name (any), passwd (any), this (delegate)
         teamName = name;
         role = "";
 
@@ -58,7 +53,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         String room = in.nextLine();            // stores the name of the room we will be joining
         gameClient.joinGameRoom(room);
 
-        // now we will check through the list of game rooms and see which one has this name and determine the room number
         for (GameRoom r : gameClient.getRoomLists()) {
             if (r.roomName.equals(room)) {
                 roomID = r.roomID;
@@ -99,26 +93,21 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 role = teamRole;                                // stores our role internally
                 System.out.println("We are gameplayer "+ teamName + " and our Role is: " + role);
 
-
-                // Now, what we create a board logic depending on whether we move first (true) or second (false)
                 if (role.equals("W")) {
-                    System.out.println("Our Move");                 // message to ourselves saying we are moving first
+                    System.out.println("Our Move");
                     bl = new BoardLogic(true);
                     SuccessorFunction sf = new SuccessorFunction();
 
                     // instead, we perform a random move
                     randomMove(bl);
                     // now, we would call our heuristic on our successor function, and obtain the board we want to use
-//                    bl = sf.getSuccessors(bl).get(0);               // or whatever board we define as the best
 
-                    // get the move from the bl
                     // pass the move to sendToServer
 //                    sendToServer(GameMessage.ACTION_MOVE, roomID);
                 }
                 else {
                     bl = new BoardLogic(false);
                     System.out.println(bl.toString());
-                    // now, we will wait for a message from opponent, and deal with it as such
                 }
                 break;
             case GameMessage.ACTION_MOVE:
@@ -139,8 +128,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 String queen_move1 = queen1.getAttribute("move", null);            // queen_move is the value of the opponent's move
                 IXMLElement arrow1 = xml.getChildAtIndex(1);
                 String arrow_move1 = arrow1.getAttribute("move", null);            // arrow_move is the value of the opponent's arrow
-//                System.out.println("Queen Move: " + queen_move1);
-//                System.out.println("Arrow Move: " + arrow_move1);
 
                 translateIn(queen_move1);
                 translateArrowIn(arrow_move1);
@@ -153,8 +140,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                     System.out.println("GAME OVER");
                     System.out.println();
                 }
-                // Update the current board with the new board state
-                // Then, create new set of viable moves (for arrows and queens)
                 break;
             case GameMessage.MSG_GENERAL:
                 System.out.println("Message Type: MSG_GENERAL");
@@ -174,8 +159,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
     public void sendToServer(String msgType, int roomID, String queen_move, String arrow_move) {
         String actionMsg = "<action type='";
         actionMsg += msgType + "'>";
-
-        // If the action is a move type, asks for info on move of queen and arrow
         actionMsg += "<queen move='";
         actionMsg += queen_move + "'></queen><arrow move='";
         actionMsg += arrow_move + "'></arrow>";
@@ -193,54 +176,33 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
      * BoardLogic b: the current BoardLogic that is representing the game state
      *
      * The strings printed out at the end are in the form (col row) to follow the convention of sending to the server
-     *
      * returns: BoardLogic representing the new game state after our random move.
      */
     private boolean randomMove(BoardLogic b) {
         Random r = new Random();
         moveData md = null;
         move m;
-        // first we randomly choose a friendly queen, q
         Queen q = b.getFriendly()[r.nextInt(4)];
-        String oldPos = ""+ q.rowPos + q.colPos;            // holds queen's original position (in row, column style)
-//        System.out.println("Our randomly chosen queen is " + q.toString());
 
-        // Chooses the random move that queen q will make
-        if(b.getLegalMoves(q).size()==0){               // if the first queen picked does not have any legal moves
-            for(Queen e : b.getFriendly()){             // look through all of our queens to see if any have legal moves
+        if(b.getLegalMoves(q).size()==0){
+            for(Queen e : b.getFriendly()){
                 if(b.getLegalMoves(e).size()!=0) {
-                    q = e;                              // assigns q as the chosen queen (e) (simplifies code below)
+                    q = e;
                     md = b.getLegalMoves(e).get(r.nextInt(b.getLegalMoves(e).size()));     // picks a random move
                     break;
                 }
             }
         }
-        else {                                          // if original pick had a legal move
+        else {
             md = b.getLegalMoves(q).get(r.nextInt(b.getLegalMoves(q).size()));
 
         }
-        m = new move(md.colPos, md.rowPos, md.Q.colPos, md.Q.rowPos);                           // Since board.getLegalMoves returns a moveData, we need to convert it to a move
+        m = new move(md.colPos, md.rowPos, md.Q.colPos, md.Q.rowPos);
         q.move(md.rowPos, md.colPos);
-//        System.out.println("Our randomly chosen move is " + m);
-                   // then we move q to a random legal place on the board
         b.updateAfterMove();
-        String newPos = "" + q.rowPos + " " + q.colPos;
 
-        // now, choose a random arrowshot that the moved queen can perform
         Arrow a = b.getArrowShots(q.rowPos,q.colPos).get(r.nextInt(b.getArrowShots(q.rowPos,q.colPos).size()));
-//        System.out.println("Our Randomly chosen arrow location is: " + a.toString());
-        String arrowPos = "" + a.rowPos + " " + a.colPos;
-
-        // finally, we throw an arrow, a, from q's new position
         b.addArrow(a.rowPos, a.colPos);
-        // at last, we update the board and GUI
-        b.updateAfterMove();
-
-        //System.out.println("Original Queen Position: " + originalPos);
-//        System.out.println("New Queen Position: " + newPos);
-//        System.out.println("Using the translator:" + translateOut(m));
-//        System.out.println("New Arrow Location: " + arrowPos);
-//        System.out.println("Using the translator:" + translateArrowOut(a));
 
 //        try {
 //            Thread.sleep(10000);                 //1000 milliseconds is one second.
@@ -257,9 +219,8 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
     }
 
      /*
-     * Method to translate move to sever
-     */
-
+      * Method to translate a queen's move to the server (from row,col to a3-g3 syntax)
+      */
     public String translateOut(move m){
 
         //move=’a3-g3’ syntax
@@ -379,11 +340,11 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         return move;
 
     }
+
     /*
-     * Method to translate move from server
+     * Method to translate move from server (from a3-g3 to row, col)
      * Also updates the board to show what move has occured (by calling updateAfterMove()
      */
-
     public void translateIn(String move){
 
         char x = move.charAt(0);
@@ -509,7 +470,10 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
     }
 
 
-
+    /*
+     * Method to translate an arrow placement to be used by sendToServer()
+     * from (row, col to a3 format)
+     */
     public String translateArrowOut(Arrow a) {
 
         String oldCol = "";
@@ -571,7 +535,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 
 
     /*
-     * Method to translate an arrow placement from server
+     * Method to translate an arrow placement from server (from a3 to row, col)
      * Also places the arrow on the board and updates it
      */
     public void translateArrowIn(String move) {

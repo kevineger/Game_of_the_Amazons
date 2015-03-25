@@ -10,6 +10,8 @@ public class MinKingDistHeuristic {
     Queen[] queens = new Queen[8];
     int ownedByUs, ownedByThem;
 
+    public MinKingDistHeuristic(){}
+
     public MinKingDistHeuristic(BoardLogic b) {
         bl = b;
         // queens <- all queens (friendly and enemy)
@@ -25,7 +27,20 @@ public class MinKingDistHeuristic {
         ownedByThem=0;
     }
 
-    public void calculate() {
+    public void calculate(BoardLogic b) {
+        bl = b;
+        // queens <- all queens (friendly and enemy)
+        for(int i=0; i<8; i++) {
+            if(i<4) {
+                queens[i]=b.getFriendly()[i];
+            }
+            else {
+                queens[i]=b.getEnemies()[i-4];
+            }
+        }
+        ownedByUs=0;
+        ownedByThem=0;
+
         // For every tile in the board
         for(int i=0; i<10; i++){
             for(int j=0; j<10; j++){

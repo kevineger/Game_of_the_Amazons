@@ -20,7 +20,7 @@ public class GameTimer {
 		Date date = new Date();
 		
 		//Used deprecated data type because Timer.schedule requires a date object not a calendar
-		date.setSeconds(date.getSeconds() +30);
+		date.setSeconds(date.getSeconds() +25);
 		clock.schedule(task, date);
 	}
 	

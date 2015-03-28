@@ -9,7 +9,7 @@ import ubco.ai.games.GameMessage;
 
 /**
  *
- * Illustrate how to write a player. A player has to implement the GamePlayer interface.  
+ * Illustrate how to write a player. A player has to implement the GamePlayer interface.
  *
  * @author Kevin
  *
@@ -218,9 +218,9 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         return b.goalTest();
     }
 
-     /*
-      * Method to translate a queen's move to the server (from row,col to a3-g3 syntax)
-      */
+    /*
+     * Method to translate a queen's move to the server (from row,col to a3-g3 syntax)
+     */
     public String translateOut(move m){
 
         //move=’a3-g3’ syntax

@@ -37,7 +37,7 @@ public class Run {
 
         //Random Player Test
         
-        GamePlayer gp = new GamePlayer("4","");
+        GamePlayer gp = new GamePlayer("tony","culos");
 
         try {
             Thread.sleep(2000);

@@ -16,7 +16,6 @@ public class TimeOutTask extends TimerTask {
         //call static GameTimer objects because could not give run a return value
         GameTimer.violations++;
         GameTimer.clock.cancel();
-        SearchTree.done = true;
         System.out.println("5 seconds to violation");
     }
 }

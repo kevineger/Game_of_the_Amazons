@@ -14,8 +14,8 @@ public class SearchTree {
     public static int evaluations;
 //    private GameTimer timer = new GameTimer();
     private ArrayList<SearchNode> frontier = new ArrayList<SearchNode>();
-//    private MinKingDistHeuristic heuristic = new MinKingDistHeuristic();
-    private MinQueenDistHeuristic heuristic = new MinQueenDistHeuristic();
+    private MinKingDistHeuristic heuristic = new MinKingDistHeuristic();
+//    private MinQueenDistHeuristic heuristic = new MinQueenDistHeuristic();
 
     public SearchTree(SearchNode N){
         root = N;
@@ -156,13 +156,13 @@ public class SearchTree {
 
 
         if(D == 0) {
-            System.out.println("Frontier Size: "+frontier.size());
-            System.out.println("Evaluation: "+evaluations);
-            System.out.println("Board Evaluated by AlphaBeta:"+N.B.toString());
+//            System.out.println("Frontier Size: "+frontier.size());
+//            System.out.println("Evaluation: "+evaluations);
+//            System.out.println("Board Evaluated by AlphaBeta:"+N.B.toString());
             evaluations++;
-            System.out.println("Calculating Heuristic");
+//            System.out.println("Calculating Heuristic");
             heuristic.calculate(N.B);
-            System.out.println("Done Calculating Heuristic");
+//            System.out.println("Done Calculating Heuristic");
             N.setValue(heuristic.ownedByUs);
             int val = N.getValue();
             return val;

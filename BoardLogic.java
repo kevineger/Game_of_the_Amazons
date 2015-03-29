@@ -435,8 +435,14 @@ public class BoardLogic {
      * @return false == still playing
      */
     protected boolean goalTest(){
-        if(enemyHasMove == false || legalQueenMoves.size() == 0)
+        if(enemyHasMove == false || legalQueenMoves.size() == 0) {
+            if (enemyHasMove == false) {
+                System.out.println("We won!");
+            } else {
+                System.out.println("We lost!");
+            }
             return true;
+        }
         else
             return false;
     }

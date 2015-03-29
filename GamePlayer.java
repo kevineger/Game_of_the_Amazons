@@ -86,7 +86,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         switch (xmlType) {
             case GameMessage.ACTION_GAME_START:
                 System.out.println("Message Type: ACTION_GAME_START");
-                //find name and associated
+                //find name and associated room number
                 String teamRole = "";
 
                 IXMLElement firstChild = xml.getChildAtIndex(0);
@@ -113,9 +113,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                     bl = new BoardLogic(true);
                     T = new SearchTree(new SearchNode(bl));
                     this.makeMove();
-                    // now, we would call our heuristic on our successor function, and obtain the board we want to use
-                    // get the move from the bl
-                    // pass the move to sendToServer
                 }
                 else {
                     bl = new BoardLogic(false);
@@ -143,14 +140,15 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 String queen_move1 = queen1.getAttribute("move", null);            // queen_move is the value of the opponent's move
                 IXMLElement arrow1 = xml.getChildAtIndex(1);
                 String arrow_move1 = arrow1.getAttribute("move", null);            // arrow_move is the value of the opponent's arrow
-//                System.out.println("Queen Move: " + queen_move1);
-//                System.out.println("Arrow Move: " + arrow_move1);
 
                 move queenMove = translateIn(queen_move1);
                 Arrow arrow = translateArrowIn(arrow_move1);
                 T.makeMoveOnRoot(queenMove, arrow);
                 frame.update(queenMove, arrow);
-                System.out.println("\nEnemy's Move"+T.getRoot().B.toString());
+//                System.out.println("\nEnemy's Move"+T.getRoot().B.toString());
+                System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
+                System.out.println("Board after enemy move: ");
+                System.out.println(bl.toString());
 
                 bl.setEnemyHasMove();
                 bl.updateLegalQueenMoves();
@@ -163,6 +161,10 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                     break;
                 }
                 this.makeMove();
+                System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
+                System.out.print("Board after our move: ");
+                System.out.println(bl.toString());
+
                 bl.setEnemyHasMove();
                 bl.updateLegalQueenMoves();
                 end = bl.goalTest();
@@ -222,8 +224,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
     }
 
 
-
-
      /*
      * Method that randomly chooses a queen to move, moves that queen, and randomly throws an arrow from that queen
      * BoardLogic b: the current BoardLogic that is representing the game state
@@ -257,20 +257,14 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         Arrow a = b.getArrowShots(q.rowPos,q.colPos).get(r.nextInt(b.getArrowShots(q.rowPos,q.colPos).size()));
         b.addArrow(a.rowPos, a.colPos);
 
-//        try {
-//            Thread.sleep(10000);                 //1000 milliseconds is one second.
-//        } catch(InterruptedException ex) {
-//            Thread.currentThread().interrupt();
-//        }
-
         sendToServer(GameMessage.MSG_GAME, roomID, translateOut(m), translateArrowOut(a));
         System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
         System.out.print("Board after our move: ");
         System.out.println(b.toString());
         System.out.println();
         System.out.println(b.goalTest());
-        b.updateLegalQueenMoves();      // YO
-        b.setEnemyHasMove();            // YO
+        b.updateLegalQueenMoves();
+        b.setEnemyHasMove();
         return b.goalTest();
     }
 

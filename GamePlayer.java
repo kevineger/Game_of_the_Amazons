@@ -147,7 +147,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 move queenMove = translateIn(queen_move1);
                 Arrow arrow = translateArrowIn(arrow_move1);
                 T.makeMoveOnRoot(queenMove, arrow);
-                frame.update(queenMove, arrow, true);
+                frame.update(queenMove, arrow);
                 System.out.println(T.getRoot().B.toString());
                 this.makeMove();
                 // Update the current board with the new board state
@@ -267,7 +267,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         if(role.equals("B")) {
             isBlack=true;
         }
-        frame.update(m, a, isBlack);
+        frame.update(m, a);
         return b;
 
 

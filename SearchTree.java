@@ -14,7 +14,8 @@ public class SearchTree {
     public static int evaluations;
 //    private GameTimer timer = new GameTimer();
     private ArrayList<SearchNode> frontier = new ArrayList<SearchNode>();
-    private MinKingDistHeuristic heuristic = new MinKingDistHeuristic();
+//    private MinKingDistHeuristic heuristic = new MinKingDistHeuristic();
+    private MinQueenDistHeuristic heuristic = new MinQueenDistHeuristic();
 
     public SearchTree(SearchNode N){
         root = N;
@@ -47,9 +48,10 @@ public class SearchTree {
     public void makeMoveOnRoot(move M, Arrow a){
         numMoves++;
         root.B.addArrow(a); // adds arrow to be shot
-
-        System.out.println("This is move: " + numMoves);
-
+        if(M.Q.isOpponent)
+            System.out.println("Number of enemy moves: " + numMoves);
+        else
+            System.out.println("Number of our moves: " +numMoves);
         //makes a move for the queen ours or theirs
         if(M.Q.isOpponent){
             for(Queen Q:root.B.enemies){
@@ -134,9 +136,11 @@ public class SearchTree {
      * starts alpha beta at the default values
      */
     public void StartAlphaBeta(){
+        evaluations=0;
         calculateDepth();
+        System.out.println("Starting Alpha Beta\nHeursitic Val: "+root.toString()+"\nDepth:"+depth+"\n");
         AlphaBeta(root, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-        System.out.println(evaluations);
+        System.out.println("exiting alpha beta");
     }
 
     /**
@@ -150,9 +154,15 @@ public class SearchTree {
      */
     private int AlphaBeta(SearchNode N, int D, int alpha, int beta, boolean maxPlayer){
 
+
         if(D == 0) {
+            System.out.println("Frontier Size: "+frontier.size());
+            System.out.println("Evaluation: "+evaluations);
+            System.out.println("Board Evaluated by AlphaBeta:"+N.B.toString());
             evaluations++;
+            System.out.println("Calculating Heuristic");
             heuristic.calculate(N.B);
+            System.out.println("Done Calculating Heuristic");
             N.setValue(heuristic.ownedByUs);
             int val = N.getValue();
             return val;
@@ -188,6 +198,7 @@ public class SearchTree {
     }
 
     public SearchNode sendMoveToServer(){
+        /*
         if(numMoves >= 0 && numMoves <= 28){
             this.expandFrontier();
         }
@@ -196,6 +207,9 @@ public class SearchTree {
             this.trimFrontier();
             this.expandFrontier();
         }
+        */
+//        this.trimFrontier();
+        this.expandFrontier();
 
         this.StartAlphaBeta();
 
@@ -234,7 +248,6 @@ public class SearchTree {
         }
         for (SearchNode S: root.getChildren() ) {
             if(max <= S.getValue()) {
-                System.out.println(S.B.toString());
                 best.add(S);
             }
         }
@@ -262,7 +275,6 @@ public class SearchTree {
         }
         for (SearchNode S: root.getChildren() ) {
             if(max <= S.getValue()) {
-                System.out.println(S.B.toString());
                 best.add(S);
             }
         }

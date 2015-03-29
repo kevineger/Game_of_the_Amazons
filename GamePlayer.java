@@ -148,7 +148,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 Arrow arrow = translateArrowIn(arrow_move1);
                 T.makeMoveOnRoot(queenMove, arrow);
 //                frame.update(queenMove, arrow, true);
-                System.out.println(T.getRoot().B.toString());
+                System.out.println("\nEnemy's Move"+T.getRoot().B.toString());
                 this.makeMove();
                 // Update the current board with the new board state
                 // Then, create new set of viable moves (for arrows and queens)

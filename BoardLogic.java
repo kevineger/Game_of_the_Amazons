@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class BoardLogic {
 
-    private boolean enemyHasMove;
+    public boolean enemyHasMove;
 	protected GamePiece[][] board = new GamePiece[10][10];
 	protected  Queen[] enemies;
 	protected  Queen[] friendly;
@@ -19,7 +19,7 @@ public class BoardLogic {
 	 * @param start true if we are first to move, false otherwise
 	 */
 	protected BoardLogic(boolean start) {
-		if (start) {
+		if (!start) {
 			board = new GamePiece[][] {
 					{ null, null, null, new Queen(0, 3, true), null, null, new Queen(0, 6, true), null, null, null },
 					{ null, null, null, null, null, null, null, null, null, null },
@@ -51,9 +51,6 @@ public class BoardLogic {
 			friendly = new Queen[] { (Queen) board[0][3], (Queen) board[0][6], (Queen) board[3][0], (Queen) board[3][9] };
 			enemies = new Queen[] { (Queen) board[6][0], (Queen) board[6][9], (Queen) board[9][3],	(Queen) board[9][6] };
 		}
-        //		Start GUI
-//        frame = new Board();
-//        frame.setVisible(true);
 
         arrows = new ArrayList<>();
         legalArrowShots = new ArrayList<>();
@@ -298,46 +295,46 @@ public class BoardLogic {
     /**
      * checks to see if enemy has any queen moves on the board
      */
-    private void setEnemyHasMove(){
-        System.out.println("BL Enemies: " + enemies.length);
+    public void setEnemyHasMove(){
+//        System.out.println("BL Enemies: " + enemies.length);
         for (Queen q : enemies){
             int startRow = q.getRowPos();
             int startCol = q.getColumnPos();
 
-            if(startRow - 1 >= 0 & board[startRow - 1][startCol] == null){
+            if(startRow - 1 >= 0 && board[startRow - 1][startCol] == null){
                 enemyHasMove = true;
                 break;
             }
 
-            if(startRow + 1 <= 9 & board[startRow + 1][startCol] == null){
+            if(startRow + 1 <= 9 && board[startRow + 1][startCol] == null){
                 enemyHasMove = true;
                 break;
             }
 
-            if(startCol - 1 >= 0 & board[startRow][startCol - 1] == null){
+            if(startCol - 1 >= 0 && board[startRow][startCol - 1] == null){
                 enemyHasMove = true;
                 break;
             }
-            if(startCol + 1 <= 9 & board[startRow][startCol + 1] == null){
-                enemyHasMove = true;
-                break;
-            }
-
-            if((startRow - 1 >= 0 && startCol - 1 >= 0) & board[startRow - 1][startCol - 1] == null){
+            if(startCol + 1 <= 9 && board[startRow][startCol + 1] == null){
                 enemyHasMove = true;
                 break;
             }
 
-            if((startRow + 1 <= 9 && startCol - 1 >= 0) & board[startRow + 1][startCol - 1] == null){
+            if((startRow - 1 >= 0 && startCol - 1 >= 0) && board[startRow - 1][startCol - 1] == null){
                 enemyHasMove = true;
                 break;
             }
 
-            if((startRow + 1 <= 9 && startCol + 1 <= 9) & board[startRow + 1][startCol + 1] == null){
+            if((startRow + 1 <= 9 && startCol - 1 >= 0) && board[startRow + 1][startCol - 1] == null){
                 enemyHasMove = true;
                 break;
             }
-            if((startRow - 1 >= 0 && startCol + 1 <= 9) & board[startRow - 1][startCol + 1] == null){
+
+            if((startRow + 1 <= 9 && startCol + 1 <= 9) && board[startRow + 1][startCol + 1] == null){
+                enemyHasMove = true;
+                break;
+            }
+            if((startRow - 1 >= 0 && startCol + 1 <= 9) && board[startRow - 1][startCol + 1] == null){
                 enemyHasMove = true;
                 break;
             }
@@ -436,12 +433,6 @@ public class BoardLogic {
         }
     }
 
-    /**
-     * repaints the gui
-     */
-    protected void updateBoard(move queenMove, moveData arrowShot, boolean isEnemy) {
-        frame.update(queenMove, arrowShot, isEnemy);
-    }
 
     /**
      *
@@ -449,7 +440,7 @@ public class BoardLogic {
      * @return false == still playing
      */
     protected boolean goalTest(){
-        if(legalQueenMoves.size() == 0)
+        if(enemyHasMove == false || legalQueenMoves.size() == 0)
             return true;
         else
             return false;

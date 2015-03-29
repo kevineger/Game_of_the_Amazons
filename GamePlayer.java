@@ -123,18 +123,29 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 System.out.println("Message Type: MSG_CHAT");
                 break;
             case GameMessage.MSG_GAME:
+                boolean end = false;
                 System.out.println("Message Type: MSG_GAME");
                 IXMLElement queen1 = xml.getChildAtIndex(0);
                 String queen_move1 = queen1.getAttribute("move", null);            // queen_move is the value of the opponent's move
                 IXMLElement arrow1 = xml.getChildAtIndex(1);
                 String arrow_move1 = arrow1.getAttribute("move", null);            // arrow_move is the value of the opponent's arrow
-
                 translateIn(queen_move1);
                 translateArrowIn(arrow_move1);
+                bl.setEnemyHasMove();
+                end = bl.goalTest();
+                System.out.println(bl.goalTest());
+                if (end) {
+                    System.out.println();
+                    System.out.println("GAME OVER");
+                    System.out.println();
+                    break;
+                }
+
                 System.out.println("We are gameplayer "+ teamName + " and our Role is: " + role);
                 System.out.println("Board after opponents move: ");
                 System.out.println(bl.toString());
-                boolean end = randomMove(bl);            // for using our random player
+                bl.setEnemyHasMove();
+                end = randomMove(bl);            // for using our random player
                 if (end) {
                     System.out.println();
                     System.out.println("GAME OVER");
@@ -215,6 +226,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         System.out.print("Board after our move: ");
         System.out.println(b.toString());
         System.out.println();
+        System.out.println(b.goalTest());
         return b.goalTest();
     }
 
@@ -465,8 +477,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
             }
         }
         move moveMessage = new move(newCol, newRow, oldCol, oldRow);
-
-        System.out.println(moveMessage.toString());
+//        System.out.println(moveMessage.toString());
     }
 
 

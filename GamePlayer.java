@@ -108,7 +108,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 if (role.equals("W")) {
                     System.out.println("Our Move");                 // message to ourselves saying we are moving first
                     bl = new BoardLogic(true);
-                    SuccessorFunction sf = new SuccessorFunction();
 
                     // instead, we perform a random move
                     bl = randomMove(bl);
@@ -150,7 +149,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 
                 move queenMove = translateIn(queen_move1);
                 Arrow arrow = translateArrowIn(arrow_move1);
-                frame.update(queenMove, arrow, true);
+                frame.update(queenMove, arrow);
                 bl.updateAfterMove();
                 System.out.println(bl.toString());
                 bl = randomMove(bl);
@@ -257,11 +256,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 
         sendToServer(GameMessage.MSG_GAME, roomID, translateOut(m), translateArrowOut(a));
         // Update GUI with move
-        boolean isBlack=false;
-        if(role.equals("B")) {
-            isBlack=true;
-        }
-        frame.update(m,a,isBlack);
+        frame.update(m,a);
         return b;
 
 

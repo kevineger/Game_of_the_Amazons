@@ -8,7 +8,6 @@ public class Run {
 
     public static void main(String[] args) {
 
-        /*
 
         Queen[] friendly = new Queen[4];
         Queen[] enemies = new Queen[4];
@@ -27,12 +26,12 @@ public class Run {
 
 
 //        BoardLogic B = new BoardLogic(true);
-        SearchNode S = new SearchNode(B);
-        SearchTree T = new SearchTree(S);
+//        SearchNode S = new SearchNode(B);
+//        SearchTree T = new SearchTree(S);
+//
+//        T.test2();
 
-        T.test2();
 
-        */
 
 
         //Random Player Test
@@ -44,6 +43,8 @@ public class Run {
         } catch(InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
+
+
 
 //        GamePlayer gp2 = new GamePlayer("5", "5");
     }

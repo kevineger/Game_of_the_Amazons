@@ -83,11 +83,11 @@ public class Board extends JPanel
     {
         try
         {
-            File whiteQueenFile = new File("./images/nicSmallBlue.png");
+            File whiteQueenFile = new File("./images/nicExtraSmall.png");
             whiteQueen = new ImageIcon(ImageIO.read(whiteQueenFile));
-            File blackQueenFile = new File("./images/nicSmall.png");
+            File blackQueenFile = new File("./images/nicExtraSmallSatan.png");
             blackQueen = new ImageIcon(ImageIO.read(blackQueenFile));
-            File arrowFile = new File("./images/arrow.png");
+            File arrowFile = new File("./images/bees.png");
             arrowMark = new ImageIcon(ImageIO.read(arrowFile));
         }
         catch (Exception e)
@@ -108,17 +108,22 @@ public class Board extends JPanel
      * Updates the board's display based on a move action.
      *
      */
-    public void update (move queenMove, Arrow a, boolean isBlack)
+    public void update (move queenMove, Arrow a)
     {
         ImageIcon queen = null;
-        if(isBlack) {
-            queen = blackQueen;
+
+        if(board[queenMove.oldRowPos][queenMove.oldColPos].getIcon()==whiteQueen) {
+            System.out.println("GUI was white queen");
+            queen = whiteQueen;
+            board[queenMove.oldRowPos][queenMove.oldColPos].setIcon(null);
+            board[queenMove.newRowPos][queenMove.newColPos].setIcon(queen);
         }
         else {
-            queen = whiteQueen;
+            queen = blackQueen;
+            board[queenMove.oldRowPos][queenMove.oldColPos].setIcon(null);
+            board[queenMove.newRowPos][queenMove.newColPos].setIcon(queen);
         }
-        board[queenMove.oldRowPos][queenMove.oldColPos].setIcon(null);
-        board[queenMove.newRowPos][queenMove.newColPos].setIcon(queen);
+
         board[a.rowPos][a.colPos].setIcon(arrowMark);
     }
 }

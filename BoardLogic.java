@@ -291,46 +291,46 @@ public class BoardLogic {
     /**
      * checks to see if enemy has any queen moves on the board
      */
-    private void setEnemyHasMove(){
+    public void setEnemyHasMove(){
         System.out.println("BL Enemies: " + enemies.length);
         for (Queen q : enemies){
             int startRow = q.getRowPos();
             int startCol = q.getColumnPos();
 
-            if(startRow - 1 >= 0 & board[startRow - 1][startCol] == null){
+            if(startRow - 1 >= 0 && board[startRow - 1][startCol] == null){
                 enemyHasMove = true;
                 break;
             }
 
-            if(startRow + 1 <= 9 & board[startRow + 1][startCol] == null){
+            if(startRow + 1 <= 9 && board[startRow + 1][startCol] == null){
                 enemyHasMove = true;
                 break;
             }
 
-            if(startCol - 1 >= 0 & board[startRow][startCol - 1] == null){
+            if(startCol - 1 >= 0 && board[startRow][startCol - 1] == null){
                 enemyHasMove = true;
                 break;
             }
-            if(startCol + 1 <= 9 & board[startRow][startCol + 1] == null){
-                enemyHasMove = true;
-                break;
-            }
-
-            if((startRow - 1 >= 0 && startCol - 1 >= 0) & board[startRow - 1][startCol - 1] == null){
+            if(startCol + 1 <= 9 && board[startRow][startCol + 1] == null){
                 enemyHasMove = true;
                 break;
             }
 
-            if((startRow + 1 <= 9 && startCol - 1 >= 0) & board[startRow + 1][startCol - 1] == null){
+            if((startRow - 1 >= 0 && startCol - 1 >= 0) && board[startRow - 1][startCol - 1] == null){
                 enemyHasMove = true;
                 break;
             }
 
-            if((startRow + 1 <= 9 && startCol + 1 <= 9) & board[startRow + 1][startCol + 1] == null){
+            if((startRow + 1 <= 9 && startCol - 1 >= 0) && board[startRow + 1][startCol - 1] == null){
                 enemyHasMove = true;
                 break;
             }
-            if((startRow - 1 >= 0 && startCol + 1 <= 9) & board[startRow - 1][startCol + 1] == null){
+
+            if((startRow + 1 <= 9 && startCol + 1 <= 9) && board[startRow + 1][startCol + 1] == null){
+                enemyHasMove = true;
+                break;
+            }
+            if((startRow - 1 >= 0 && startCol + 1 <= 9) && board[startRow - 1][startCol + 1] == null){
                 enemyHasMove = true;
                 break;
             }

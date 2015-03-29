@@ -111,7 +111,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                     System.out.println("Our Move");                 // message to ourselves saying we are moving first
                     bl = new BoardLogic(true);
                     T = new SearchTree(new SearchNode(bl));
-
+                    this.makeMove();
                     // now, we would call our heuristic on our successor function, and obtain the board we want to use
                     // get the move from the bl
                     // pass the move to sendToServer
@@ -141,22 +141,16 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 String queen_move1 = queen1.getAttribute("move", null);            // queen_move is the value of the opponent's move
                 IXMLElement arrow1 = xml.getChildAtIndex(1);
                 String arrow_move1 = arrow1.getAttribute("move", null);            // arrow_move is the value of the opponent's arrow
-                System.out.println("Queen Move: " + queen_move1);
-                System.out.println("Arrow Move: " + arrow_move1);
 
-                
-                
-                
-                move queenMove = translateIn(queen_move1);
-                Arrow arrow = translateArrowIn(arrow_move1);
-                frame.update(queenMove, arrow, true);
+                move queenMove = translate.translateIn(queen_move1);
+                Arrow arrow = translate.translateArrowIn(arrow_move1);
+                frame.update(queenMove, arrow);
+                T.getRoot().B.updateAfterMove();
+
+                System.out.println(bl.toString());
                 bl.updateAfterMove();
                 System.out.println(bl.toString());
-                bl = randomMove(bl);
-                bl.updateAfterMove();
-                System.out.println(bl.toString());
-                move queenMove = translateIn(queen_move1);
-                Arrow arrow = translateArrowIn(arrow_move1);
+
                 T.makeMoveOnRoot(queenMove, arrow);
                 frame.update(queenMove, arrow);
                 System.out.println(T.getRoot().B.toString());
@@ -200,89 +194,10 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         move made = S.getMove();
         Arrow arrowShot = S.getArrowShot();
 
-        String qMove = this.translateOut(made);
-        String aMove = this.translateArrowOut(arrowShot);
+        String qMove = this.translate.translateOut(made);
+        String aMove = this.translate.translateArrowOut(arrowShot);
 
         this.sendToServer(GameMessage.MSG_GAME, roomID,qMove, aMove);
     }
-
-
-
-    /*
-     * Method that randomly chooses a queen to move, moves that queen, and randomly throws an arrow from that queen
-     * BoardLogic b: the current BoardLogic that is representing the game state
-     *
-     * The strings printed out at the end are in the form (col row) to follow the convention of sending to the server
-     *
-     * returns: BoardLogic representing the new game state after our random move.
-     */
-    private BoardLogic randomMove(BoardLogic b) {
-        Random r = new Random();
-        String originalPos;
-        // first we randomly choose a friendly queen, q
-        Queen q = b.getFriendly()[r.nextInt(4)];
-        System.out.println("Our randomly chosen queen is " + q.toString());
-
-        move m =null;
-        // Chooses the random move that queen q will make
-        if(b.getLegalMoves(q).size()==0){
-            for(Queen e : b.getFriendly()){
-                if(b.getLegalMoves(e).size()!=0) {
-                    // Since board.getLegalMoves returns a moveData, we need to convert it to a move
-                    moveData md = b.getLegalMoves(e).get(r.nextInt(b.getLegalMoves(e).size()));
-                    m = new move(md.colPos, md.rowPos, md.Q.colPos, md.Q.rowPos);
-                    System.out.println("Our randomly chosen move is " + m);
-                    q.move(md.rowPos, md.colPos);
-                    break;
-                }
-            }
-        }
-        else{
-            // Since board.getLegalMoves returns a moveData, we need to convert it to a move
-            moveData md = b.getLegalMoves(q).get(r.nextInt(b.getLegalMoves(q).size()));
-            m = new move(md.colPos, md.rowPos, md.Q.colPos, md.Q.rowPos);
-            System.out.println("Our randomly chosen move is " + m);
-            q.move(md.rowPos, md.colPos);
-        }
-
-        // then we move q to a random legal place on the board
-             // may want to change this to m (move) instead of md (moveData
-        bl.updateAfterMove();
-        String newPos = "" + q.rowPos + " " + q.colPos;
-
-        // now, choose a random arrowshot that the moved queen can perform
-        Arrow a = bl.getArrowShots(q.rowPos,q.colPos).get(r.nextInt(bl.getArrowShots(q.rowPos,q.colPos).size()));
-        System.out.println("Our Randomly chosen arrow location is: " + a.toString());
-        String arrowPos = "" + a.rowPos + " " + a.colPos;
-
-        // finally, we throw an arrow, a, from q's new position
-        bl.addArrow(a.rowPos, a.colPos);
-        // at last, we update the board and GUI
-        bl.updateAfterMove();
-
-        //System.out.println("Original Queen Position: " + originalPos);
-        System.out.println("New Queen Position: " + newPos);
-        System.out.println("Using the translator:" + translateOut(m));
-        System.out.println("New Arrow Location: " + arrowPos);
-        System.out.println("Using the translator:" + translateArrowOut(a));
-
-        try {
-            Thread.sleep(3000);                 //1000 milliseconds is one second.
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-
-        sendToServer(GameMessage.MSG_GAME, roomID, translate.translateOut(m), translate.translateArrowOut(a));
-        // Update GUI with move
-        boolean isBlack=false;
-        if(role.equals("B")) {
-            isBlack=true;
-        }
-        frame.update(m, a);
-        return b;
-
-
-    }
-
 
 }

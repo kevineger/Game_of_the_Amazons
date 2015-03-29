@@ -54,7 +54,8 @@ public class SearchTree {
                 if(M.oldColPos == Q.colPos && M.oldRowPos == Q.rowPos)
                     Q.move(M.newRowPos,M.newColPos);
             }
-        }else{
+        }
+        else{
             for(Queen Q:root.B.friendly){
                 if(M.oldColPos == Q.colPos && M.oldRowPos == Q.rowPos)
                     Q.move(M.newRowPos,M.newColPos);

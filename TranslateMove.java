@@ -122,7 +122,6 @@ public class TranslateMove {
                 System.out.println("Invalid row position");;
                 break;
         }
-
         move = oldCol+oldRow+"-"+newCol+newRow;
         return move;
 
@@ -132,7 +131,7 @@ public class TranslateMove {
      * Also updates the board to show what move has occured (by calling updateAfterMove()
      */
 
-    public void translateIn(String move){
+    public move translateIn(String move){
 
         char x = move.charAt(0);
         char y = move.charAt(1);
@@ -240,6 +239,8 @@ public class TranslateMove {
                 System.out.println("Invalid row position");
                 break;
         }
+
+        return  new move(inNewRow,inNewCol, new Queen(inOldRow, inOldCol, true));
 
     }
 

@@ -43,8 +43,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         gameClient = new GameClient(name, passwd, this);
         System.out.printf(getRooms());
         joinRoom();
-        frame = new Board();
-        frame.setVisible(true);
     }
 
     //	Gets room list
@@ -102,6 +100,9 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                         break;
                     }
                 }
+                if(teamRole.equals("W")) frame = new Board(true);
+                else frame = new Board(false);
+                frame.setVisible(true);
                 role = teamRole;                                // stores our role internally
                 System.out.println("We are gameplayer "+ teamName + " and our Role is: " + role);
 
@@ -147,7 +148,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 move queenMove = translateIn(queen_move1);
                 Arrow arrow = translateArrowIn(arrow_move1);
                 T.makeMoveOnRoot(queenMove, arrow);
-//                frame.update(queenMove, arrow, true);
+                frame.update(queenMove, arrow);
                 System.out.println("\nEnemy's Move"+T.getRoot().B.toString());
                 this.makeMove();
                 // Update the current board with the new board state
@@ -188,6 +189,8 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         SearchNode S = T.sendMoveToServer();
         move made = S.getMove();
         Arrow arrowShot = S.getArrowShot();
+
+        frame.update(made,arrowShot);
 
         String qMove = this.translateOut(made);
         String aMove = this.translateArrowOut(arrowShot);

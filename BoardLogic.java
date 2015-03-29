@@ -19,7 +19,7 @@ public class BoardLogic {
 	 * @param start true if we are first to move, false otherwise
 	 */
 	protected BoardLogic(boolean start) {
-		if (!start) {
+		if (start) {
 			board = new GamePiece[][] {
 					{ null, null, null, new Queen(0, 3, true), null, null, new Queen(0, 6, true), null, null, null },
 					{ null, null, null, null, null, null, null, null, null, null },
@@ -66,10 +66,6 @@ public class BoardLogic {
 	 */
 	protected BoardLogic(GamePiece[][] newBoard) {
 		this.board = newBoard;
-
-//      Start GUI
-        frame = new Board();
-        frame.setVisible(true);
 
         legalArrowShots = new ArrayList<moveData>();
 		legalQueenMoves = new ArrayList<moveData>();

@@ -27,21 +27,24 @@ public class Board extends JPanel
     private JButton board[][] = new JButton[10][10];
     private JPanel panel = new JPanel();
 
+    Boolean bottom;
+
 
     private boolean arrowShot = false;
 
     /**
      * Constructor, sets up the Game Board.
      */
-    public Board()
+    public Board(Boolean b)
     {
+        bottom = b;
         makeBoard();
         makePieces();
     }
 
     private void makeBoard ()
     {
-        panel.setBorder(BorderFactory.createTitledBorder("The Game of Amazons"));
+        panel.setBorder(BorderFactory.createTitledBorder("The Game of Bees"));
 
         panel.setLayout(new GridLayout(10, 10));
         Graphics g = null;
@@ -94,14 +97,26 @@ public class Board extends JPanel
         {
             e.printStackTrace();
         }
-        board[0][3].setIcon(blackQueen);
-        board[0][6].setIcon(blackQueen);
-        board[3][0].setIcon(blackQueen);
-        board[3][9].setIcon(blackQueen);
-        board[6][0].setIcon(whiteQueen);
-        board[6][9].setIcon(whiteQueen);
-        board[9][6].setIcon(whiteQueen);
-        board[9][3].setIcon(whiteQueen);
+        if(bottom) {
+            board[0][3].setIcon(blackQueen);
+            board[0][6].setIcon(blackQueen);
+            board[3][0].setIcon(blackQueen);
+            board[3][9].setIcon(blackQueen);
+            board[6][0].setIcon(whiteQueen);
+            board[6][9].setIcon(whiteQueen);
+            board[9][6].setIcon(whiteQueen);
+            board[9][3].setIcon(whiteQueen);
+        }
+        else {
+            board[0][3].setIcon(whiteQueen);
+            board[0][6].setIcon(whiteQueen);
+            board[3][0].setIcon(whiteQueen);
+            board[3][9].setIcon(whiteQueen);
+            board[6][0].setIcon(blackQueen);
+            board[6][9].setIcon(blackQueen);
+            board[9][6].setIcon(blackQueen);
+            board[9][3].setIcon(blackQueen);
+        }
     }
 
     /**

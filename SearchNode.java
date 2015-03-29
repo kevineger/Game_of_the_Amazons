@@ -12,7 +12,6 @@ public class SearchNode {
     protected BoardLogic B;
     private Integer value = 0;
     private ArrayList<SearchNode> children = new ArrayList<SearchNode>();
-    private MinKingDistHeuristic heuristic;
     private SuccessorFunction2 funct = new SuccessorFunction2();
 
     /**
@@ -29,9 +28,6 @@ public class SearchNode {
         queenMove = M;
         arrowShot = A;
         value = heuristicValue;
-        heuristic = new MinKingDistHeuristic(board);
-
-
     }
 
     /**
@@ -46,7 +42,6 @@ public class SearchNode {
         queenMove = M;
         arrowShot = A;
         value = heuristicValue;
-        heuristic = new MinKingDistHeuristic(board);
     }
 
     /**
@@ -59,7 +54,6 @@ public class SearchNode {
         B = board;
         queenMove = M;
         arrowShot = A;
-        heuristic = new MinKingDistHeuristic(board);
     }
 
     /**
@@ -68,7 +62,6 @@ public class SearchNode {
      */
     public SearchNode(BoardLogic board){
         B = board;
-        heuristic = new MinKingDistHeuristic(board);
     }
 
     /**
@@ -77,14 +70,14 @@ public class SearchNode {
     public ArrayList<SearchNode> setAllChildren(boolean Move){
 
         if(Move) {
-            ArrayList<SearchNode> expanded = funct.getSuccessors(B);
+            ArrayList<SearchNode> expanded = funct.getSuccessors(B, true);
             for (SearchNode S: expanded){
                 S.setParent(this);
                 children.add(S);
             }
             return children;
         }else{
-            ArrayList<SearchNode> expanded = funct.enemySuccesor(B);
+            ArrayList<SearchNode> expanded = funct.getSuccessors(B, false);
             for (SearchNode S: expanded) {
                 S.setParent(this);
                 children.add(S);
@@ -111,11 +104,11 @@ public class SearchNode {
     }
 
     /**
-     * sets all succesors in the tree as searchnodes instead of boardlogics
+     * returns the arrow shot to get from its parent to this state
+     * @return
      */
-    public void setHeuristicValue(){
-        heuristic.calculate();
-        value = heuristic.ownedByUs;
+    public Arrow getArrowShot(){
+        return  arrowShot;
     }
 
     /**

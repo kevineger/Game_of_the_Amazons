@@ -14,8 +14,8 @@ public class SearchTree {
     public static int evaluations;
 //    private GameTimer timer = new GameTimer();
     private ArrayList<SearchNode> frontier = new ArrayList<SearchNode>();
-//    private MinKingDistHeuristic heuristic = new MinKingDistHeuristic();
-    private MinQueenDistHeuristic heuristic = new MinQueenDistHeuristic();
+    private MinKingDistHeuristic heuristic = new MinKingDistHeuristic();
+//    private MinQueenDistHeuristic heuristic = new MinQueenDistHeuristic();
 
     public SearchTree(SearchNode N){
         root = N;

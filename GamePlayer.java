@@ -24,6 +24,8 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
     String teamName;
     int roomID;
 
+    Board frame = null;
+
     /*
      * Constructor
      */
@@ -39,6 +41,8 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         gameClient = new GameClient(name, passwd, this);
         System.out.printf(getRooms());
         joinRoom();
+        frame = new Board();
+        frame.setVisible(true);
     }
 
     //	Gets room list
@@ -144,8 +148,9 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 System.out.println("Queen Move: " + queen_move1);
                 System.out.println("Arrow Move: " + arrow_move1);
 
-                translateIn(queen_move1);
-                translateArrowIn(arrow_move1);
+                move queenMove = translateIn(queen_move1);
+                Arrow arrow = translateArrowIn(arrow_move1);
+                frame.update(queenMove, arrow, true);
                 bl.updateAfterMove();
                 System.out.println(bl.toString());
                 bl = randomMove(bl);
@@ -244,13 +249,19 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         System.out.println("New Arrow Location: " + arrowPos);
         System.out.println("Using the translator:" + translateArrowOut(a));
 
-//        try {
-//            Thread.sleep(10000);                 //1000 milliseconds is one second.
-//        } catch(InterruptedException ex) {
-//            Thread.currentThread().interrupt();
-//        }
+        try {
+            Thread.sleep(3000);                 //1000 milliseconds is one second.
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
 
         sendToServer(GameMessage.MSG_GAME, roomID, translateOut(m), translateArrowOut(a));
+        // Update GUI with move
+        boolean isBlack=false;
+        if(role.equals("B")) {
+            isBlack=true;
+        }
+        frame.update(m,a,isBlack);
         return b;
 
 
@@ -383,7 +394,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
      * Method to translate move from server
      */
 
-    public void translateIn(String move){
+    public move translateIn(String move){
 
         char x = move.charAt(0);
         char y = move.charAt(1);
@@ -504,6 +515,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         move moveMessage = new move(newCol, newRow, oldCol, oldRow);
 
         System.out.println(moveMessage.toString());
+        return moveMessage;
     }
 
 
@@ -568,7 +580,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
     }
 
 
-    public void translateArrowIn(String move) {
+    public Arrow translateArrowIn(String move) {
 
         char x = move.charAt(0);
         char y = move.charAt(1);
@@ -630,5 +642,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         }
         Arrow a = new Arrow(oldRow, oldCol);
         bl.addArrow(a);
+        return a;
     }
 }

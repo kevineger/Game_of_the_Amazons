@@ -111,7 +111,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                     System.out.println("Our Move");                 // message to ourselves saying we are moving first
                     bl = new BoardLogic(true);
                     T = new SearchTree(new SearchNode(bl));
-
+                    this.makeMove();
                     // now, we would call our heuristic on our successor function, and obtain the board we want to use
                     // get the move from the bl
                     // pass the move to sendToServer

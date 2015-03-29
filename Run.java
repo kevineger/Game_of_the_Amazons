@@ -36,14 +36,21 @@ public class Run {
 
 
         //Random Player Test
-        
-        GamePlayer gp = new GamePlayer("tony","culos");
+//        BoardLogic bl = new BoardLogic(true);
+//        SearchNode S = new SearchNode(bl);
+//        SearchTree T = new SearchTree(S);
+//
+//        T.expandFrontier();
+//        T.StartAlphaBeta();
 
-        try {
-            Thread.sleep(2000);
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+
+        GamePlayer gp = new GamePlayer("anthony","c");
+//
+//        try {
+//            Thread.sleep(2000);
+//        } catch(InterruptedException ex) {
+//            Thread.currentThread().interrupt();
+//        }
 
 //        GamePlayer gp2 = new GamePlayer("5", "5");
     }

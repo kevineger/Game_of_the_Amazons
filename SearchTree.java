@@ -48,6 +48,8 @@ public class SearchTree {
         numMoves++;
         root.B.addArrow(a); // adds arrow to be shot
 
+        System.out.println("This is move: " + numMoves);
+
         //makes a move for the queen ours or theirs
         if(M.Q.isOpponent){
             for(Queen Q:root.B.enemies){
@@ -102,15 +104,16 @@ public class SearchTree {
      */
     public void trimFrontier(){
         System.out.println("Frontier size:" + frontier.size());
+        int avg = 0;
         for (SearchNode S: frontier){
-            if(S.getValue() == 0){
                 heuristic.calculate(S.B);
                 S.setValue(heuristic.ownedByUs);
                 avg += S.getValue();
-            }
         }
-
-        avg = avg/frontier.size();
+        if(frontier.size() != 0)
+            avg = avg/frontier.size();
+        else
+            System.out.println("frontier size is zeros");
         System.out.println("Average is: "+avg);
         ArrayList<SearchNode> toRemove = new ArrayList<SearchNode>();
         for(SearchNode S: frontier){
@@ -133,6 +136,7 @@ public class SearchTree {
     public void StartAlphaBeta(){
         calculateDepth();
         AlphaBeta(root, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        System.out.println(evaluations);
     }
 
     /**
@@ -151,7 +155,6 @@ public class SearchTree {
             heuristic.calculate(N.B);
             N.setValue(heuristic.ownedByUs);
             int val = N.getValue();
-            avg += val;
             return val;
         }
 
@@ -185,7 +188,7 @@ public class SearchTree {
     }
 
     public SearchNode sendMoveToServer(){
-        if(numMoves >= 0 && numMoves <28){
+        if(numMoves >= 0 && numMoves <= 28){
             this.expandFrontier();
         }
 

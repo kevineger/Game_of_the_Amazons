@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -19,6 +20,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 
     GameClient gameClient = null;
     BoardLogic bl;
+    SearchTree T;
 
     String role;                    // role is the string that holds if we go first (B) or second (W)
     String teamName;
@@ -108,20 +110,15 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 if (role.equals("W")) {
                     System.out.println("Our Move");                 // message to ourselves saying we are moving first
                     bl = new BoardLogic(true);
-
-                    // instead, we perform a random move
-                    bl = randomMove(bl);
-                    System.out.println(bl.toString());
+                    T = new SearchTree(new SearchNode(bl));
 
                     // now, we would call our heuristic on our successor function, and obtain the board we want to use
-//                    bl = sf.getSuccessors(bl).get(0);               // or whatever board we define as the best
-
                     // get the move from the bl
                     // pass the move to sendToServer
-//                    sendToServer(GameMessage.ACTION_MOVE, roomID);
                 }
                 else {
                     bl = new BoardLogic(false);
+                    T = new SearchTree(new SearchNode(bl));
                     System.out.println(bl.toString());
                     // now, we will wait for a message from opponent, and deal with it as such
                 }
@@ -149,12 +146,10 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 
                 move queenMove = translateIn(queen_move1);
                 Arrow arrow = translateArrowIn(arrow_move1);
-                frame.update(queenMove, arrow);
-                bl.updateAfterMove();
-                System.out.println(bl.toString());
-                bl = randomMove(bl);
-                bl.updateAfterMove();
-                System.out.println(bl.toString());
+                T.makeMoveOnRoot(queenMove, arrow);
+                frame.update(queenMove, arrow, true);
+                System.out.println(T.getRoot().B.toString());
+                this.makeMove();
                 // Update the current board with the new board state
                 // Then, create new set of viable moves (for arrows and queens)
                 break;
@@ -188,6 +183,18 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         gameClient.sendToServer(msg, true);
         System.out.println(roomID);
     }
+
+    public void makeMove(){
+        SearchNode S = T.sendMoveToServer();
+        move made = S.getMove();
+        Arrow arrowShot = S.getArrowShot();
+
+        String qMove = this.translateOut(made);
+        String aMove = this.translateArrowOut(arrowShot);
+
+        this.sendToServer(GameMessage.MSG_GAME, roomID,qMove, aMove);
+    }
+
 
 
     /*
@@ -256,7 +263,11 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 
         sendToServer(GameMessage.MSG_GAME, roomID, translateOut(m), translateArrowOut(a));
         // Update GUI with move
-        frame.update(m,a);
+        boolean isBlack=false;
+        if(role.equals("B")) {
+            isBlack=true;
+        }
+        frame.update(m, a, isBlack);
         return b;
 
 
@@ -501,13 +512,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 System.out.println("Invalid row position");;
                 break;
         }
-
-        for (Queen q: bl.getEnemies()) {
-            if (q.colPos == oldCol && q.rowPos == oldRow) {
-                q.move(newRow, newCol);
-            }
-        }
-        move moveMessage = new move(newCol, newRow, oldCol, oldRow);
+        move moveMessage = new move(newRow, newCol, new Queen(oldRow,oldCol, true));
 
         System.out.println(moveMessage.toString());
         return moveMessage;
@@ -543,7 +548,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
             case 9: oldCol = "j";
                 break;
             default:
-                System.out.println("Invalid col position");;
+                System.out.println("Invalid col position");
                 break;
         }
         switch(y){
@@ -568,7 +573,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
             case 9: oldRow = 0;
                 break;
             default:
-                System.out.println("Invalid row position");;
+                System.out.println("Invalid row position");
                 break;
         }
         return oldCol + oldRow;

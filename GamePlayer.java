@@ -131,7 +131,8 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 String arrow_move1 = arrow1.getAttribute("move", null);            // arrow_move is the value of the opponent's arrow
                 translateIn(queen_move1);
                 translateArrowIn(arrow_move1);
-                bl.setEnemyHasMove();
+                bl.setEnemyHasMove();               // YO
+                bl.updateLegalQueenMoves();         // YO
                 end = bl.goalTest();
                 System.out.println(bl.goalTest());
                 if (end) {
@@ -144,7 +145,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 System.out.println("We are gameplayer "+ teamName + " and our Role is: " + role);
                 System.out.println("Board after opponents move: ");
                 System.out.println(bl.toString());
-                bl.setEnemyHasMove();
                 end = randomMove(bl);            // for using our random player
                 if (end) {
                     System.out.println();
@@ -222,11 +222,13 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 //        }
 
         sendToServer(GameMessage.MSG_GAME, roomID, translateOut(m), translateArrowOut(a));
-        System.out.println("We are gameplayer "+ teamName + " and our Role is: " + role);
+        System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
         System.out.print("Board after our move: ");
         System.out.println(b.toString());
         System.out.println();
         System.out.println(b.goalTest());
+        b.updateLegalQueenMoves();      // YO
+        b.setEnemyHasMove();            // YO
         return b.goalTest();
     }
 

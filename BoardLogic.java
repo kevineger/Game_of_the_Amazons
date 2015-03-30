@@ -19,7 +19,7 @@ public class BoardLogic {
 	 * @param start true if we are first to move, false otherwise
 	 */
 	protected BoardLogic(boolean start) {
-		if (!start) {
+		if (start) {
 			board = new GamePiece[][] {
 					{ null, null, null, new Queen(0, 3, true), null, null, new Queen(0, 6, true), null, null, null },
 					{ null, null, null, null, null, null, null, null, null, null },
@@ -66,10 +66,6 @@ public class BoardLogic {
 	 */
 	protected BoardLogic(GamePiece[][] newBoard) {
 		this.board = newBoard;
-
-//      Start GUI
-        frame = new Board();
-        frame.setVisible(true);
 
         legalArrowShots = new ArrayList<moveData>();
 		legalQueenMoves = new ArrayList<moveData>();
@@ -295,46 +291,46 @@ public class BoardLogic {
     /**
      * checks to see if enemy has any queen moves on the board
      */
-    private void setEnemyHasMove(){
+    public void setEnemyHasMove(){
         System.out.println("BL Enemies: " + enemies.length);
         for (Queen q : enemies){
             int startRow = q.getRowPos();
             int startCol = q.getColumnPos();
 
-            if(startRow - 1 >= 0 & board[startRow - 1][startCol] == null){
+            if(startRow - 1 >= 0 && board[startRow - 1][startCol] == null){
                 enemyHasMove = true;
                 break;
             }
 
-            if(startRow + 1 <= 9 & board[startRow + 1][startCol] == null){
+            if(startRow + 1 <= 9 && board[startRow + 1][startCol] == null){
                 enemyHasMove = true;
                 break;
             }
 
-            if(startCol - 1 >= 0 & board[startRow][startCol - 1] == null){
+            if(startCol - 1 >= 0 && board[startRow][startCol - 1] == null){
                 enemyHasMove = true;
                 break;
             }
-            if(startCol + 1 <= 9 & board[startRow][startCol + 1] == null){
-                enemyHasMove = true;
-                break;
-            }
-
-            if((startRow - 1 >= 0 && startCol - 1 >= 0) & board[startRow - 1][startCol - 1] == null){
+            if(startCol + 1 <= 9 && board[startRow][startCol + 1] == null){
                 enemyHasMove = true;
                 break;
             }
 
-            if((startRow + 1 <= 9 && startCol - 1 >= 0) & board[startRow + 1][startCol - 1] == null){
+            if((startRow - 1 >= 0 && startCol - 1 >= 0) && board[startRow - 1][startCol - 1] == null){
                 enemyHasMove = true;
                 break;
             }
 
-            if((startRow + 1 <= 9 && startCol + 1 <= 9) & board[startRow + 1][startCol + 1] == null){
+            if((startRow + 1 <= 9 && startCol - 1 >= 0) && board[startRow + 1][startCol - 1] == null){
                 enemyHasMove = true;
                 break;
             }
-            if((startRow - 1 >= 0 && startCol + 1 <= 9) & board[startRow - 1][startCol + 1] == null){
+
+            if((startRow + 1 <= 9 && startCol + 1 <= 9) && board[startRow + 1][startCol + 1] == null){
+                enemyHasMove = true;
+                break;
+            }
+            if((startRow - 1 >= 0 && startCol + 1 <= 9) && board[startRow - 1][startCol + 1] == null){
                 enemyHasMove = true;
                 break;
             }
@@ -439,8 +435,14 @@ public class BoardLogic {
      * @return false == still playing
      */
     protected boolean goalTest(){
-        if(enemyHasMove == false || legalQueenMoves.size() == 0)
+        if(enemyHasMove == false || legalQueenMoves.size() == 0) {
+            if (enemyHasMove == false) {
+                System.out.println("We won!");
+            } else {
+                System.out.println("We lost!");
+            }
             return true;
+        }
         else
             return false;
     }

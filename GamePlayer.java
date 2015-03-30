@@ -43,8 +43,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         gameClient = new GameClient(name, passwd, this);
         System.out.printf(getRooms());
         joinRoom();
-        frame = new Board();
-        frame.setVisible(true);
     }
 
     //	Gets room list
@@ -88,7 +86,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         switch (xmlType) {
             case GameMessage.ACTION_GAME_START:
                 System.out.println("Message Type: ACTION_GAME_START");
-                //find name and associated
+                //find name and associated room number
                 String teamRole = "";
 
                 IXMLElement firstChild = xml.getChildAtIndex(0);
@@ -102,6 +100,9 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                         break;
                     }
                 }
+                if(teamRole.equals("W")) frame = new Board(true);
+                else frame = new Board(false);
+                frame.setVisible(true);
                 role = teamRole;                                // stores our role internally
                 System.out.println("We are gameplayer "+ teamName + " and our Role is: " + role);
 
@@ -112,9 +113,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                     bl = new BoardLogic(true);
                     T = new SearchTree(new SearchNode(bl));
                     this.makeMove();
-                    // now, we would call our heuristic on our successor function, and obtain the board we want to use
-                    // get the move from the bl
-                    // pass the move to sendToServer
                 }
                 else {
                     bl = new BoardLogic(false);
@@ -124,7 +122,50 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 }
                 break;
             case GameMessage.ACTION_MOVE:
+                boolean end2 = false;
                 System.out.println("Message Type: ACTION_MOVE");
+                IXMLElement queen2 = xml.getChildAtIndex(0);
+                String queen_move2 = queen2.getAttribute("move", null);            // queen_move is the value of the opponent's move
+                IXMLElement arrow2 = xml.getChildAtIndex(1);
+                String arrow_move2 = arrow2.getAttribute("move", null);            // arrow_move is the value of the opponent's arrow
+
+                move queenMove2 = translateIn(queen_move2);
+                Arrow arrow3 = translateArrowIn(arrow_move2);
+                T.makeMoveOnRoot(queenMove2, arrow3);
+                frame.update(queenMove2, arrow3);
+//                System.out.println("\nEnemy's Move"+T.getRoot().B.toString());
+                System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
+                System.out.println("Board after enemy move: ");
+                System.out.println(bl.toString());
+
+                bl.setEnemyHasMove();
+                bl.updateLegalQueenMoves();
+                end2 = bl.goalTest();
+                System.out.println("Goal test after opponent's move: " + bl.goalTest());
+                if (end2) {
+                    System.out.println();
+                    System.out.println("GAME OVER");
+                    System.out.println();
+                    break;
+                }
+                this.makeMove();
+                System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
+                System.out.print("Board after our move: ");
+                System.out.println(bl.toString());
+
+                bl.setEnemyHasMove();
+                bl.updateLegalQueenMoves();
+                end2 = bl.goalTest();
+                System.out.println("Goal test after our move: " + bl.goalTest());
+                if (end2) {
+                    System.out.println();
+                    System.out.println("GAME OVER");
+                    System.out.println();
+                    break;
+                }
+
+                // Update the current board with the new board state
+                // Then, create new set of viable moves (for arrows and queens)
                 break;
             case GameMessage.ACTION_POS_MARKED:
                 System.out.println("Message Type: ACTION_POS_MARKED");
@@ -136,20 +177,48 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 System.out.println("Message Type: MSG_CHAT");
                 break;
             case GameMessage.MSG_GAME:
+                boolean end = false;
                 System.out.println("Message Type: MSG_GAME");
                 IXMLElement queen1 = xml.getChildAtIndex(0);
                 String queen_move1 = queen1.getAttribute("move", null);            // queen_move is the value of the opponent's move
                 IXMLElement arrow1 = xml.getChildAtIndex(1);
                 String arrow_move1 = arrow1.getAttribute("move", null);            // arrow_move is the value of the opponent's arrow
-//                System.out.println("Queen Move: " + queen_move1);
-//                System.out.println("Arrow Move: " + arrow_move1);
 
                 move queenMove = translateIn(queen_move1);
                 Arrow arrow = translateArrowIn(arrow_move1);
                 T.makeMoveOnRoot(queenMove, arrow);
-//                frame.update(queenMove, arrow, true);
-                System.out.println("\nEnemy's Move"+T.getRoot().B.toString());
+                frame.update(queenMove, arrow);
+//                System.out.println("\nEnemy's Move"+T.getRoot().B.toString());
+                System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
+                System.out.println("Board after enemy move: ");
+                System.out.println(bl.toString());
+
+                bl.setEnemyHasMove();
+                bl.updateLegalQueenMoves();
+                end = bl.goalTest();
+                System.out.println("Goal test after opponent's move: " + bl.goalTest());
+                if (end) {
+                    System.out.println();
+                    System.out.println("GAME OVER");
+                    System.out.println();
+                    break;
+                }
                 this.makeMove();
+                System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
+                System.out.print("Board after our move: ");
+                System.out.println(bl.toString());
+
+                bl.setEnemyHasMove();
+                bl.updateLegalQueenMoves();
+                end = bl.goalTest();
+                System.out.println("Goal test after our move: " + bl.goalTest());
+                if (end) {
+                    System.out.println();
+                    System.out.println("GAME OVER");
+                    System.out.println();
+                    break;
+                }
+
                 // Update the current board with the new board state
                 // Then, create new set of viable moves (for arrows and queens)
                 break;
@@ -189,84 +258,57 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         move made = S.getMove();
         Arrow arrowShot = S.getArrowShot();
 
+        frame.update(made,arrowShot);
+
         String qMove = this.translateOut(made);
         String aMove = this.translateArrowOut(arrowShot);
 
-        this.sendToServer(GameMessage.MSG_GAME, roomID,qMove, aMove);
+        this.sendToServer(GameMessage.ACTION_MOVE, roomID,qMove, aMove);
     }
 
 
-
-    /*
+     /*
      * Method that randomly chooses a queen to move, moves that queen, and randomly throws an arrow from that queen
      * BoardLogic b: the current BoardLogic that is representing the game state
      *
      * The strings printed out at the end are in the form (col row) to follow the convention of sending to the server
-     *
-     * returns: BoardLogic representing the new game state after our random move.
+     * returns: boolean representing the if the game has finished or not.
      */
-    private BoardLogic randomMove(BoardLogic b) {
+    private boolean randomMove(BoardLogic b) {
         Random r = new Random();
-        String originalPos;
-        // first we randomly choose a friendly queen, q
+        moveData md = null;
+        move m;
         Queen q = b.getFriendly()[r.nextInt(4)];
-        System.out.println("Our randomly chosen queen is " + q.toString());
 
-        move m =null;
-        // Chooses the random move that queen q will make
         if(b.getLegalMoves(q).size()==0){
             for(Queen e : b.getFriendly()){
                 if(b.getLegalMoves(e).size()!=0) {
-                    // Since board.getLegalMoves returns a moveData, we need to convert it to a move
-                    moveData md = b.getLegalMoves(e).get(r.nextInt(b.getLegalMoves(e).size()));
-                    m = new move(md.colPos, md.rowPos, md.Q.colPos, md.Q.rowPos);
-                    System.out.println("Our randomly chosen move is " + m);
-                    q.move(md.rowPos, md.colPos);
+                    q = e;
+                    md = b.getLegalMoves(e).get(r.nextInt(b.getLegalMoves(e).size()));     // picks a random move
                     break;
                 }
             }
         }
-        else{
-            // Since board.getLegalMoves returns a moveData, we need to convert it to a move
-            moveData md = b.getLegalMoves(q).get(r.nextInt(b.getLegalMoves(q).size()));
-            m = new move(md.colPos, md.rowPos, md.Q.colPos, md.Q.rowPos);
-            System.out.println("Our randomly chosen move is " + m);
-            q.move(md.rowPos, md.colPos);
+        else {
+            md = b.getLegalMoves(q).get(r.nextInt(b.getLegalMoves(q).size()));
+
         }
+        m = new move(md.colPos, md.rowPos, md.Q.colPos, md.Q.rowPos);
+        q.move(md.rowPos, md.colPos);
+        b.updateAfterMove();
 
-        // then we move q to a random legal place on the board
-             // may want to change this to m (move) instead of md (moveData
-        bl.updateAfterMove();
-        String newPos = "" + q.rowPos + " " + q.colPos;
+        Arrow a = b.getArrowShots(q.rowPos,q.colPos).get(r.nextInt(b.getArrowShots(q.rowPos,q.colPos).size()));
+        b.addArrow(a.rowPos, a.colPos);
 
-        // now, choose a random arrowshot that the moved queen can perform
-        Arrow a = bl.getArrowShots(q.rowPos,q.colPos).get(r.nextInt(bl.getArrowShots(q.rowPos,q.colPos).size()));
-        System.out.println("Our Randomly chosen arrow location is: " + a.toString());
-        String arrowPos = "" + a.rowPos + " " + a.colPos;
-
-        // finally, we throw an arrow, a, from q's new position
-        bl.addArrow(a.rowPos, a.colPos);
-        // at last, we update the board and GUI
-        bl.updateAfterMove();
-
-        //System.out.println("Original Queen Position: " + originalPos);
-        System.out.println("New Queen Position: " + newPos);
-        System.out.println("Using the translator:" + translateOut(m));
-        System.out.println("New Arrow Location: " + arrowPos);
-        System.out.println("Using the translator:" + translateArrowOut(a));
-
-        try {
-            Thread.sleep(3000);                 //1000 milliseconds is one second.
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-
-        sendToServer(GameMessage.MSG_GAME, roomID, translateOut(m), translateArrowOut(a));
-        // Update GUI with move
-        frame.update(m,a);
-        return b;
-
-
+        sendToServer(GameMessage.ACTION_MOVE, roomID, translateOut(m), translateArrowOut(a));
+        System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
+        System.out.print("Board after our move: ");
+        System.out.println(b.toString());
+        System.out.println();
+        System.out.println(b.goalTest());
+        b.updateLegalQueenMoves();
+        b.setEnemyHasMove();
+        return b.goalTest();
     }
 
      /*

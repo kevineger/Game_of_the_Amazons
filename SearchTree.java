@@ -10,12 +10,11 @@ public class SearchTree {
     private int numMoves;
     protected SearchNode bestMove = null;
     private int depth;
-    private int avg = 0;
     public static int evaluations;
 //    private GameTimer timer = new GameTimer();
     private ArrayList<SearchNode> frontier = new ArrayList<SearchNode>();
-//    private MinKingDistHeuristic heuristic = new MinKingDistHeuristic();
-    private MinQueenDistHeuristic heuristic = new MinQueenDistHeuristic();
+    private MinKingDistHeuristic heuristic = new MinKingDistHeuristic();
+//    private MinQueenDistHeuristic heuristic = new MinQueenDistHeuristic();
 
     public SearchTree(SearchNode N){
         root = N;
@@ -108,15 +107,18 @@ public class SearchTree {
         System.out.println("Frontier size:" + frontier.size());
         int avg = 0;
         for (SearchNode S: frontier){
-                heuristic.calculate(S.B);
-                S.setValue(heuristic.ownedByUs);
+            if(numMoves<40) {
+                QueenHeuristic.calculate(S.B);
+                S.setValue(QueenHeuristic.ownedByUs);
+            }else{
+                QueenHeuristic.calculate(S.B);
+                S.setValue(QueenHeuristic.ownedByUs);
+            }
+
                 avg += S.getValue();
         }
         if(frontier.size() != 0)
             avg = avg/frontier.size();
-        else
-            System.out.println("frontier size is zeros");
-        System.out.println("Average is: "+avg);
         ArrayList<SearchNode> toRemove = new ArrayList<SearchNode>();
         for(SearchNode S: frontier){
             if(S.getValue() < avg){
@@ -128,8 +130,6 @@ public class SearchTree {
             frontier.remove(S);
             S.parent.getChildren().remove(S);
         }
-
-        avg =0;
     }
 
     /**
@@ -155,16 +155,18 @@ public class SearchTree {
     private int AlphaBeta(SearchNode N, int D, int alpha, int beta, boolean maxPlayer){
 
 
-        if(D == 0) {
-            System.out.println("Frontier Size: "+frontier.size());
-            System.out.println("Evaluation: "+evaluations);
-            System.out.println("Board Evaluated by AlphaBeta:"+N.B.toString());
+        if(D == 0 || N.getChildren().size() == 0) {
             evaluations++;
-            System.out.println("Calculating Heuristic");
-            heuristic.calculate(N.B);
-            System.out.println("Done Calculating Heuristic");
-            N.setValue(heuristic.ownedByUs);
+            if(numMoves<20) {
+                QueenHeuristic.calculate(N.B);
+                N.setValue(QueenHeuristic.ownedByUs);
+            }else{
+                QueenHeuristic.calculate(N.B);
+                N.setValue(QueenHeuristic.ownedByUs);
+            }
             int val = N.getValue();
+            System.out.println(N.B.toString());
+            System.out.println("Setting Frontier to Value "+val);
             return val;
         }
 
@@ -176,7 +178,7 @@ public class SearchTree {
                 V = Math.max(V, AlphaBeta(S,D - 1, alpha, beta, false ));
                 alpha = Math.max(alpha, V);
 
-                if(beta < alpha)
+                if(beta <= alpha)
                     break;
             }
             N.setValue(V);
@@ -189,7 +191,7 @@ public class SearchTree {
                 V = Math.min(V, AlphaBeta(S,D - 1, alpha, beta, true ));
                 beta = Math.min(beta, V);
 
-                if(beta < alpha)
+                if(beta <= alpha)
                     break;
             }
             N.setValue(V);
@@ -203,23 +205,29 @@ public class SearchTree {
             this.expandFrontier();
         }
 
-        if(numMoves > 28){
-            this.trimFrontier();
-            this.expandFrontier();
-        }
-        */
-//        this.trimFrontier();
         this.expandFrontier();
 
-        this.StartAlphaBeta();
+//        if(numMoves > 25 && numMoves <= 50) {
+////            this.trimFrontier();
+//            this.expandFrontier();
+//        }else if(numMoves>50){
+////            this.trimFrontier();
+//            this.expandFrontier();
+////            this.trimFrontier();
+//            this.expandFrontier();
+////            this.trimFrontier();
+//        }
 
-        SearchNode S = this.getMoveAfterAlphaBeta();
-        this.makeMoveOnRoot(S.getMove(),S.getArrowShot());
-        return S;
+*/
+
+        this.StartAlphaBeta();
+        bestMove = this.getMoveAfterAlphaBeta();
+        this.makeMoveOnRoot(bestMove.getMove(),bestMove.getArrowShot());
+        return bestMove;
     }
 
     public void iterativeDeepening(){
-        SearchNode bestMove = null;
+        bestMove = null;
         while(true){
 
             this.StartAlphaBeta();
@@ -236,8 +244,8 @@ public class SearchTree {
      * returns the best move to be made according to alpha beta
      * @return serchnode to be parsed for the move and arrowShot
      */
-    public SearchNode getMoveAfterAlphaBeta(){
-        SearchNode R = null;
+    private SearchNode getMoveAfterAlphaBeta(){
+        SearchNode R;
         Random rand = new Random();
         int max = 0;
         ArrayList<SearchNode> best = new ArrayList<SearchNode>();

@@ -19,7 +19,7 @@ public class BoardLogic {
 	 * @param start true if we are first to move, false otherwise
 	 */
 	protected BoardLogic(boolean start) {
-		if (!start) {
+		if (start) {
 			board = new GamePiece[][] {
 					{ null, null, null, new Queen(0, 3, true), null, null, new Queen(0, 6, true), null, null, null },
 					{ null, null, null, null, null, null, null, null, null, null },

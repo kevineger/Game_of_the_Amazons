@@ -122,7 +122,50 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 }
                 break;
             case GameMessage.ACTION_MOVE:
+                boolean end2 = false;
                 System.out.println("Message Type: ACTION_MOVE");
+                IXMLElement queen2 = xml.getChildAtIndex(0);
+                String queen_move2 = queen2.getAttribute("move", null);            // queen_move is the value of the opponent's move
+                IXMLElement arrow2 = xml.getChildAtIndex(1);
+                String arrow_move2 = arrow2.getAttribute("move", null);            // arrow_move is the value of the opponent's arrow
+
+                move queenMove2 = translateIn(queen_move2);
+                Arrow arrow3 = translateArrowIn(arrow_move2);
+                T.makeMoveOnRoot(queenMove2, arrow3);
+                frame.update(queenMove2, arrow3);
+//                System.out.println("\nEnemy's Move"+T.getRoot().B.toString());
+                System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
+                System.out.println("Board after enemy move: ");
+                System.out.println(bl.toString());
+
+                bl.setEnemyHasMove();
+                bl.updateLegalQueenMoves();
+                end2 = bl.goalTest();
+                System.out.println("Goal test after opponent's move: " + bl.goalTest());
+                if (end2) {
+                    System.out.println();
+                    System.out.println("GAME OVER");
+                    System.out.println();
+                    break;
+                }
+                this.makeMove();
+                System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
+                System.out.print("Board after our move: ");
+                System.out.println(bl.toString());
+
+                bl.setEnemyHasMove();
+                bl.updateLegalQueenMoves();
+                end2 = bl.goalTest();
+                System.out.println("Goal test after our move: " + bl.goalTest());
+                if (end2) {
+                    System.out.println();
+                    System.out.println("GAME OVER");
+                    System.out.println();
+                    break;
+                }
+
+                // Update the current board with the new board state
+                // Then, create new set of viable moves (for arrows and queens)
                 break;
             case GameMessage.ACTION_POS_MARKED:
                 System.out.println("Message Type: ACTION_POS_MARKED");
@@ -220,7 +263,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         String qMove = this.translateOut(made);
         String aMove = this.translateArrowOut(arrowShot);
 
-        this.sendToServer(GameMessage.MSG_GAME, roomID,qMove, aMove);
+        this.sendToServer(GameMessage.ACTION_MOVE, roomID,qMove, aMove);
     }
 
 
@@ -257,7 +300,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         Arrow a = b.getArrowShots(q.rowPos,q.colPos).get(r.nextInt(b.getArrowShots(q.rowPos,q.colPos).size()));
         b.addArrow(a.rowPos, a.colPos);
 
-        sendToServer(GameMessage.MSG_GAME, roomID, translateOut(m), translateArrowOut(a));
+        sendToServer(GameMessage.ACTION_MOVE, roomID, translateOut(m), translateArrowOut(a));
         System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
         System.out.print("Board after our move: ");
         System.out.println(b.toString());

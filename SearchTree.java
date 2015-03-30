@@ -14,8 +14,8 @@ public class SearchTree {
     public static int evaluations;
 //    private GameTimer timer = new GameTimer();
     private ArrayList<SearchNode> frontier = new ArrayList<SearchNode>();
-//    private MinKingDistHeuristic heuristic = new MinKingDistHeuristic();
-    private MinQueenDistHeuristic heuristic = new MinQueenDistHeuristic();
+    private MinKingDistHeuristic heuristic = new MinKingDistHeuristic();
+//    private MinQueenDistHeuristic heuristic = new MinQueenDistHeuristic();
 
     public SearchTree(SearchNode N){
         root = N;
@@ -171,7 +171,7 @@ public class SearchTree {
                 V = Math.max(V, AlphaBeta(S,D - 1, alpha, beta, false ));
                 alpha = Math.max(alpha, V);
 
-                if(beta < alpha)
+                if(beta <= alpha)
                     break;
             }
             N.setValue(V);
@@ -184,7 +184,7 @@ public class SearchTree {
                 V = Math.min(V, AlphaBeta(S,D - 1, alpha, beta, true ));
                 beta = Math.min(beta, V);
 
-                if(beta < alpha)
+                if(beta <= alpha)
                     break;
             }
             N.setValue(V);
@@ -205,7 +205,11 @@ public class SearchTree {
         */
 //        this.trimFrontier();
         this.expandFrontier();
-
+//        if(numMoves>15) {
+//            this.expandFrontier();
+////            this.trimFrontier();
+////            this.expandFrontier();
+//        }
         this.StartAlphaBeta();
 
         SearchNode S = this.getMoveAfterAlphaBeta();

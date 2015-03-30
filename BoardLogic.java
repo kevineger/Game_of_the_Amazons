@@ -208,7 +208,7 @@ public class BoardLogic {
 	 * @param G GamePiece to inspect
 	 * @return list of legal moves of piece G
 	 */
-	protected ArrayList<moveData> getQueenMoves(GamePiece G) {
+	public ArrayList<moveData> getQueenMoves(GamePiece G) {
 		return getLegalMoves(G);
     }
 

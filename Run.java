@@ -47,7 +47,7 @@ public class Run {
 //        T.StartAlphaBeta();
 
 
-//        GamePlayer gp = new GamePlayer("99","99");
+        GamePlayer gp = new GamePlayer("asdf","asdf");
 //
 //        try {
 //            Thread.sleep(2000);
@@ -55,7 +55,7 @@ public class Run {
 //            Thread.currentThread().interrupt();
 //        }
 
-        GamePlayer gp2 = new GamePlayer("5", "5");
+//        GamePlayer gp2 = new GamePlayer("5", "5");
 
 
     }

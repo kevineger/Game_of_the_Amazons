@@ -128,7 +128,7 @@ public class Board extends JPanel
         ImageIcon queen = null;
 
         if(board[queenMove.oldRowPos][queenMove.oldColPos].getIcon()==whiteQueen) {
-            System.out.println("GUI was white queen");
+//            System.out.println("GUI was white queen");
             queen = whiteQueen;
             board[queenMove.oldRowPos][queenMove.oldColPos].setIcon(null);
             board[queenMove.newRowPos][queenMove.newColPos].setIcon(queen);

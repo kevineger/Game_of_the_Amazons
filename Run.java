@@ -54,8 +54,8 @@ public class Run {
 //        } catch(InterruptedException ex) {
 //            Thread.currentThread().interrupt();
 //        }
-
-        GamePlayer gp2 = new GamePlayer("5", "5");
+        GamePlayer gp1 = new GamePlayer("Nic", "Cage");
+//        GamePlayer gp2 = new GamePlayer("6", "6");
 
 
     }

@@ -193,6 +193,11 @@ public class SearchTree {
     }
 
     public SearchNode sendMoveToServer(){
+        try {
+            Thread.sleep(5000);
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
         /*
         if(numMoves >= 0 && numMoves <= 28){
             this.expandFrontier();

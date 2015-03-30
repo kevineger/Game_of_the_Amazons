@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Random;
+
 /**
  * Created by TCulos on 2015-03-12.
  */
@@ -12,8 +13,8 @@ public class SearchTree {
     public static int evaluations;
 //    private GameTimer timer = new GameTimer();
     private ArrayList<SearchNode> frontier = new ArrayList<SearchNode>();
-    private MinKingDistHeuristic kingHeuristic = new MinKingDistHeuristic();
-    private MinKingDistHeuristic QueenHeuristic = new MinKingDistHeuristic();
+    private MinKingDistHeuristic heuristic = new MinKingDistHeuristic();
+//    private MinQueenDistHeuristic heuristic = new MinQueenDistHeuristic();
 
     public SearchTree(SearchNode N){
         root = N;
@@ -56,8 +57,7 @@ public class SearchTree {
                 if(M.oldColPos == Q.colPos && M.oldRowPos == Q.rowPos)
                     Q.move(M.newRowPos,M.newColPos);
             }
-        }
-        else{
+        }else{
             for(Queen Q:root.B.friendly){
                 if(M.oldColPos == Q.colPos && M.oldRowPos == Q.rowPos)
                     Q.move(M.newRowPos,M.newColPos);
@@ -81,7 +81,6 @@ public class SearchTree {
      */
     public void expandFrontier(){
         ArrayList<SearchNode> newFrontier = new ArrayList<SearchNode>();
-        System.out.println("Frontier size before expansion: " + frontier.size());
         if(numMoves != 1 && numMoves != 0 && depth != 0){
             if(depth % 2 ==0){
                 for(SearchNode S: frontier)
@@ -97,7 +96,6 @@ public class SearchTree {
         //clearing the old frontier and setting the new one
         frontier.clear();
         frontier.addAll(newFrontier);
-        System.out.println("Frontier size after expansion: " + frontier.size());
         depth++;
     }
 
@@ -106,6 +104,7 @@ public class SearchTree {
      * removes all nodes in the frontier that are less than the average heuristic value
      */
     public void trimFrontier(){
+        System.out.println("Frontier size:" + frontier.size());
         int avg = 0;
         for (SearchNode S: frontier){
             if(numMoves<40) {
@@ -139,7 +138,9 @@ public class SearchTree {
     public void StartAlphaBeta(){
         evaluations=0;
         calculateDepth();
+        System.out.println("Starting Alpha Beta\nHeursitic Val: "+root.toString()+"\nDepth:"+depth+"\n");
         AlphaBeta(root, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        System.out.println("exiting alpha beta");
     }
 
     /**
@@ -180,7 +181,6 @@ public class SearchTree {
                 if(beta <= alpha)
                     break;
             }
-
             N.setValue(V);
             return V;
         }else{
@@ -194,13 +194,16 @@ public class SearchTree {
                 if(beta <= alpha)
                     break;
             }
-
             N.setValue(V);
             return V;
         }
     }
 
     public SearchNode sendMoveToServer(){
+        /*
+        if(numMoves >= 0 && numMoves <= 28){
+            this.expandFrontier();
+        }
 
         this.expandFrontier();
 
@@ -215,7 +218,7 @@ public class SearchTree {
 ////            this.trimFrontier();
 //        }
 
-
+*/
 
         this.StartAlphaBeta();
         bestMove = this.getMoveAfterAlphaBeta();

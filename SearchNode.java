@@ -10,7 +10,7 @@ public class SearchNode {
     private move queenMove;
     private Arrow arrowShot;
     protected BoardLogic B;
-    private Integer value = 0;
+    private Integer value;
     private ArrayList<SearchNode> children = new ArrayList<SearchNode>();
     private SuccessorFunction2 funct = new SuccessorFunction2();
 

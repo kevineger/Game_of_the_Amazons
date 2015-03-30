@@ -61,6 +61,11 @@ public class MinKingDistHeuristic {
         while(!isFound) {
             Queue<LocationData> tempQ = new LinkedList<>();
             int index = q.size();
+            //If empty tile is trapped, break
+            if(index==0) {
+                isFound=true;
+                break;
+            }
             for(int i=0; i<index; i++) {
                 LocationData currentTile = q.poll();
                 // If queen is found, increase count and break

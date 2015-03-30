@@ -10,6 +10,8 @@ public class MinQueenDistHeuristic {
     Queen[] queens = new Queen[8];
     int ownedByUs, ownedByThem;
 
+    public MinQueenDistHeuristic() {}
+
     public MinQueenDistHeuristic(BoardLogic b) {
         bl = b;
         // queens <- all queens (friendly and enemy)
@@ -25,13 +27,25 @@ public class MinQueenDistHeuristic {
         ownedByThem=0;
     }
 
-    public void calculate() {
+    public void calculate(BoardLogic b) {
+        bl = b;
+        // queens <- all queens (friendly and enemy)
+        for(int i=0; i<8; i++) {
+            if(i<4) {
+                queens[i]=b.getFriendly()[i];
+            }
+            else {
+                queens[i]=b.getEnemies()[i-4];
+            }
+        }
+        ownedByUs=0;
+        ownedByThem=0;
+
         // For every tile in the board
         for(int i=0; i<10; i++){
             for(int j=0; j<10; j++){
                 // If tile is empty, check who 'owns it'
                 if(bl.board[i][j]==null){
-                    System.out.println("For tile: "+i+" (row), "+j+" (col)");
                     findNearestQueen(i, j);
                 }
             }
@@ -47,6 +61,11 @@ public class MinQueenDistHeuristic {
         while(!isFound) {
             Queue<LocationData> tempQ = new LinkedList<>();
             int index = q.size();
+            //If empty tile is trapped, break
+            if(index==0) {
+                isFound=true;
+                break;
+            }
             for(int i=0; i<index; i++) {
                 LocationData currentTile = q.poll();
                 // If queen is found, increase count and break
@@ -65,13 +84,9 @@ public class MinQueenDistHeuristic {
                     // Determine who's queen it is, increase count accordingly
                     if(bl.board[currentTile.rowPos][currentTile.colPos].isOpponent){
                         ownedByThem++;
-                        System.out.println("Owned by them");
-//                        System.out.println("Enemy queen owns tile: "+currentTile.rowPos+" (row), "+currentTile.colPos+" (col)");
                     }
                     else {
                         ownedByUs++;
-                        System.out.println("Owned by us");
-//                        System.out.println("Friendly queen owns tile: "+currentTile.rowPos+" (row), "+currentTile.colPos+" (col)");
                     }
                     // If element is the last in the queue (ie: current 'layer') then break
                     break;

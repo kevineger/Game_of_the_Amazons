@@ -12,12 +12,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+
 /**
  * @author Kevin
  */
 public class Board extends JPanel
 {
-
     private ImageIcon blackQueen;
     private ImageIcon whiteQueen;
     private ImageIcon arrowMark;
@@ -71,7 +71,7 @@ public class Board extends JPanel
             }
         }
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(650, 650));
+        frame.setPreferredSize(new Dimension(1000, 1000));
         frame.setLayout(new BorderLayout());
         frame.setLayout(new BorderLayout());
         frame.setContentPane(panel);

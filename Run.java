@@ -47,7 +47,7 @@ public class Run {
 //        T.StartAlphaBeta();
 
 
-        GamePlayer gp = new GamePlayer("asdf","asdf");
+        GamePlayer gp = new GamePlayer("2","");
 //
 //        try {
 //            Thread.sleep(2000);

@@ -152,7 +152,7 @@ public class SearchTree {
 
         if(D == 0 || N.getChildren().size() == 0) {
             evaluations++;
-            if(numMoves<10) {
+            if(numMoves<7) {
                 queenHeuristic.calculate(N.B);
                 N.setValue(queenHeuristic.ownedByUs - queenHeuristic.ownedByThem);
 
@@ -193,6 +193,49 @@ public class SearchTree {
             return V;
         }
     }
+    private boolean terminalNode(SearchNode n, int depth) {
+        return(depth == 0 || n.getChildren().size() == 0);
+    }
+
+    public int miniMax(SearchNode node, int depth, String player) {
+        //if end of the tree is reached calculate and set the heuristic value
+        if(terminalNode(node, depth)) {
+
+            if (numMoves < 7) {
+                queenHeuristic.calculate(node.B);
+                node.setValue(queenHeuristic.ownedByUs - queenHeuristic.ownedByThem);
+            } else {
+                kingHeuristic.calculate(node.B);
+                node.setValue(kingHeuristic.ownedByUs - kingHeuristic.ownedByThem);
+
+            }
+            int heuristicValue = node.getValue();
+            return heuristicValue;
+        }
+        //if it is a Max player
+        if(player.equals("Max")){
+            // set bestValue to equivalent of negative infinity
+            int bestVal = Integer.MIN_VALUE;
+
+            for(SearchNode sNode: node.getChildren()){
+                bestVal = Math.max(bestVal,miniMax(sNode,depth-1,"Min"));
+
+            }
+            node.setValue(bestVal);
+            return bestVal;
+
+        }
+        else{
+            // set bestValue to equivalent of infinity
+            int bestVal = Integer.MAX_VALUE;
+            for(SearchNode sNode: node.getChildren()){
+                bestVal = Math.min(bestVal, miniMax(sNode, depth-1,"Max"));
+            }
+            node.setValue(bestVal);
+            return bestVal;
+        }
+
+    }
 
     public SearchNode sendMoveToServer(){
         /*
@@ -202,28 +245,31 @@ public class SearchTree {
         */
         this.expandFrontier();
 //
-        if(numMoves > 30) {
-//            this.trimFrontier();
-            this.expandFrontier();
-        }else if(numMoves>50 && numMoves<=60 ){
-//            this.trimFrontier();
-            this.expandFrontier();
-//            this.trimFrontier();
-            this.expandFrontier();
-//            this.trimFrontier();
-        }else if(numMoves> 60){
-            this.expandFrontier();
-//            this.trimFrontier();
-            this.expandFrontier();
-//            this.trimFrontier();
-            this.expandFrontier();
+//        if(numMoves > 30) {
+////            this.trimFrontier();
+//            this.expandFrontier();
+//        }else if(numMoves>50 && numMoves<=60 ){
+////            this.trimFrontier();
+//            this.expandFrontier();
+////            this.trimFrontier();
+//            this.expandFrontier();
+////            this.trimFrontier();
+//        }else if(numMoves> 60){
+//            this.expandFrontier();
+////            this.trimFrontier();
+//            this.expandFrontier();
+////            this.trimFrontier();
+//            this.expandFrontier();
+//
+//            this.expandFrontier();
+//        }
 
-            this.expandFrontier();
-        }
 
 
-
-        this.StartAlphaBeta();
+        //this.StartAlphaBeta();
+        calculateDepth();
+        miniMax(root, depth, "Max");
+        //will work the same for minimax
         bestMove = this.getMoveAfterAlphaBeta();
         this.makeMoveOnRoot(bestMove.getMove(),bestMove.getArrowShot());
         return bestMove;
@@ -264,7 +310,7 @@ public class SearchTree {
             }
         }
         System.out.println(root.getChildren().size());
-        System.out.println("Best Value Amone Options: " + max);
+        System.out.println("Best Value Among Options: " + max);
         System.out.println("Number Of Moves Available: " + best.size());
         if(best.size() > 1)
             R = best.get(rand.nextInt(best.size()-1));

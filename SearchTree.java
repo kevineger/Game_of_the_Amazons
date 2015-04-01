@@ -17,6 +17,8 @@ public class SearchTree {
     private MinKingDistHeuristic kingHeuristic = new MinKingDistHeuristic();
     private MinQueenDistHeuristic queenHeuristic = new MinQueenDistHeuristic();
 
+    public SearchNode bestNode;
+
     public SearchTree(SearchNode N){
         root = N;
         depth = 1;
@@ -202,31 +204,36 @@ public class SearchTree {
         */
         this.expandFrontier();
 //
-        if(numMoves > 30) {
-//            this.trimFrontier();
-            this.expandFrontier();
-        }else if(numMoves>50 && numMoves<=60 ){
-//            this.trimFrontier();
-            this.expandFrontier();
-//            this.trimFrontier();
-            this.expandFrontier();
-//            this.trimFrontier();
-        }else if(numMoves> 60){
-            this.expandFrontier();
-//            this.trimFrontier();
-            this.expandFrontier();
-//            this.trimFrontier();
-            this.expandFrontier();
+//        if(numMoves > 30) {
+////            this.trimFrontier();
+//            this.expandFrontier();
+//        }
+//    else if(numMoves>50 && numMoves<=60 ){
+////            this.trimFrontier();
+//            this.expandFrontier();
+////            this.trimFrontier();
+//            this.expandFrontier();
+////            this.trimFrontier();
+//        }
+//        else if(numMoves> 60){
+//            this.expandFrontier();
+////            this.trimFrontier();
+//            this.expandFrontier();
+////            this.trimFrontier();
+//            this.expandFrontier();
+//
+//            this.expandFrontier();
+//        }
 
-            this.expandFrontier();
-        }
 
 
-
-        this.StartAlphaBeta();
-        bestMove = this.getMoveAfterAlphaBeta();
-        this.makeMoveOnRoot(bestMove.getMove(),bestMove.getArrowShot());
-        return bestMove;
+//        this.StartAlphaBeta();
+        this.calculateDepth();
+        this.minimax(depth, root, true);
+//        bestMove = this.getMoveAfterAlphaBeta();
+        this.makeMoveOnRoot(bestNode.getMove(),bestNode.getArrowShot());
+        System.out.println("Best node's returned value: " + bestNode.getValue());
+        return bestNode;
     }
 
     public SearchNode iterativeDeepening(){
@@ -306,5 +313,53 @@ public class SearchTree {
         depth = 0;
         frontier.clear();
         root.getChildren().clear();
+    }
+
+
+    /**
+     * Method to perform minimax compution
+     *
+     * depth = current depth of iterative deepening
+     * node = current node being evaluated
+     * max = boolean representing if we are a max player or not
+     * also updates the best node along the way
+     */
+
+    public int minimax(int Depth, SearchNode node, boolean max) {
+        // base case
+        if (Depth == 0) {
+            if(numMoves<10) {
+                queenHeuristic.calculate(node.B);
+                node.setValue(queenHeuristic.ownedByUs - queenHeuristic.ownedByThem);
+            }else{
+                kingHeuristic.calculate(node.B);
+                node.setValue(kingHeuristic.ownedByUs - kingHeuristic.ownedByThem);
+            }
+            return node.getValue();
+        }
+        // if a max node
+        else if (max) {
+            int bestValue = Integer.MIN_VALUE;
+            for (SearchNode child : node.getChildren()) {
+                int value = minimax(Depth - 1, child, false);
+                bestValue = Math.max(value, bestValue);
+                if (bestValue == value) {       // saves the best node
+                    bestNode = child;
+                }
+            }
+            return bestValue;
+        }
+        // if a min node
+        else {
+            int bestValue = Integer.MAX_VALUE;
+            for (SearchNode child : node.getChildren()) {
+                int value = minimax(Depth - 1, child, true);
+                bestValue = Math.min(value, bestValue);
+                if (bestValue == value) {       // saves the best node
+                    bestNode = child;
+                }
+            }
+            return bestValue;
+        }
     }
 }

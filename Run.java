@@ -55,7 +55,7 @@ public class Run {
 //            Thread.currentThread().interrupt();
 //        }
 
-//        GamePlayer gp2 = new GamePlayer("5", "5");
+        GamePlayer gp2 = new GamePlayer("5", "5");
 
 
     }

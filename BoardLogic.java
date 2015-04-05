@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/**
+ * @author TCulos
+ */
 public class BoardLogic {
 
     private boolean enemyHasMove;
@@ -9,7 +12,6 @@ public class BoardLogic {
     protected  ArrayList<Arrow> arrows;
 	private  ArrayList<moveData> legalArrowShots;
 	private  ArrayList<moveData> legalQueenMoves;
-//    GameBoard frame = null;
     Board frame = null;
 
 	/**
@@ -292,7 +294,6 @@ public class BoardLogic {
      * checks to see if enemy has any queen moves on the board
      */
     public void setEnemyHasMove(){
-        System.out.println("BL Enemies: " + enemies.length);
         for (Queen q : enemies){
             int startRow = q.getRowPos();
             int startCol = q.getColumnPos();

@@ -10,6 +10,7 @@ public class SuccessorFunction2 {
     public ArrayList<SearchNode> getSuccessors(BoardLogic state, boolean us) {
         ArrayList<SearchNode> successors = new ArrayList<SearchNode>();
         Queen[] queens;
+        //check to see whos move it is and make the appropriate successors
         if(us){
             queens = state.getFriendly();}
         else{

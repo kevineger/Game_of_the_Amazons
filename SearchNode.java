@@ -6,29 +6,12 @@ import java.util.ArrayList;
  */
 public class SearchNode {
 
-    protected SearchNode parent;
     private move queenMove;
     private Arrow arrowShot;
     protected BoardLogic B;
     private Integer value;
     private ArrayList<SearchNode> children = new ArrayList<SearchNode>();
     private SuccessorFunction2 funct = new SuccessorFunction2();
-
-    /**
-     * search node used for determining a move with all values being instantiated
-     * @param P parent of this search node
-     * @param board game state
-     * @param M queen move
-     * @param A arrow show
-     * @param heuristicValue
-     */
-    public SearchNode(SearchNode P,BoardLogic board,move M, Arrow A, int heuristicValue){
-        parent = P;
-        B = board;
-        queenMove = M;
-        arrowShot = A;
-        value = heuristicValue;
-    }
 
     /**
      * search node used for determining a move with all values being instantiated
@@ -72,14 +55,12 @@ public class SearchNode {
         if(Move) {
             ArrayList<SearchNode> expanded = funct.getSuccessors(B, true);
             for (SearchNode S: expanded){
-                S.setParent(this);
                 children.add(S);
             }
             return children;
         }else{
             ArrayList<SearchNode> expanded = funct.getSuccessors(B, false);
             for (SearchNode S: expanded) {
-                S.setParent(this);
                 children.add(S);
             }
             return children;
@@ -118,14 +99,6 @@ public class SearchNode {
     public int getValue(){
         this.B.toString();
         return value;
-    }
-
-    /**
-     * sets the parent of the node for use in set all children
-     * @param S
-     */
-    public void setParent(SearchNode S){
-        parent = S;
     }
 
     /**

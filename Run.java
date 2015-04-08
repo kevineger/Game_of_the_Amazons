@@ -47,15 +47,15 @@ public class Run {
 //        T.StartAlphaBeta();
 
 
-//        GamePlayer gp = new GamePlayer("99","99");
+        GamePlayer gp = new GamePlayer("asdf","asdf");
 //
 //        try {
 //            Thread.sleep(2000);
 //        } catch(InterruptedException ex) {
 //            Thread.currentThread().interrupt();
 //        }
-        GamePlayer gp1 = new GamePlayer("Nic", "Cage");
-//        GamePlayer gp2 = new GamePlayer("6", "6");
+
+//        GamePlayer gp2 = new GamePlayer("5", "5");
 
 
     }

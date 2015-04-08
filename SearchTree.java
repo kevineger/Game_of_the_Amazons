@@ -258,31 +258,6 @@ public class SearchTree {
     }
 
     /**
-     * returns the best move to be made according to alpha beta
-     * @return searchnode to be parsed for the move and arrowShot
-     */
-    public SearchNode getMoveAfterIterative(){
-        Random rand = new Random();
-        int max = Integer.MIN_VALUE;
-        ArrayList<SearchNode> best = new ArrayList<SearchNode>();
-        for(SearchNode S:root.getChildren()){
-            max = Math.max(max, S.getValue());
-        }
-        for (SearchNode S: root.getChildren() ) {
-            if(max <= S.getValue()) {
-                max = S.getValue();
-            }
-        }
-        System.out.println(root.getChildren().size());
-        System.out.println("Best Value Amone Options: " + max);
-        System.out.println("Number Of Moves Available: " + best.size());
-        if(best.size() > 1)
-            return best.get(rand.nextInt(best.size()-1));
-        else
-            return best.get(0);
-    }
-
-    /**
      * used to clear the tree apart from the root
      */
     private void clearTree(){

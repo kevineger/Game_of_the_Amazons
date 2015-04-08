@@ -2,6 +2,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
+ * min king heuristic to determine which player owns what number of positions on a board
+ * based of the movement of a king chess piece with contention of spaces included
  * Created by Kevin on 2015-03-12.
  */
 public class MinKingDistHeuristic {
@@ -11,21 +13,11 @@ public class MinKingDistHeuristic {
 
     public MinKingDistHeuristic(){}
 
-    public MinKingDistHeuristic(BoardLogic b) {
-        bl = b;
-        // queens <- all queens (friendly and enemy)
-        for(int i=0; i<8; i++) {
-            if(i<4) {
-                queens[i]=b.getFriendly()[i];
-            }
-            else {
-                queens[i]=b.getEnemies()[i-4];
-            }
-        }
-        ownedByUs=0;
-        ownedByThem=0;
-    }
-
+    /**
+     * calculated the number of squares owned by us and owned by us given a gamestate
+     * by a boardlogic instance b
+     * @param b
+     */
     public void calculate(BoardLogic b) {
         bl = b;
         // queens <- all queens (friendly and enemy)
@@ -50,6 +42,7 @@ public class MinKingDistHeuristic {
             }
         }
     }
+
     public void findNearestQueen(int row, int col) {
         boolean[][] checked = new boolean[10][10];    // 2d board representation of if a spot has been checked
         checked[row][col]=true; // Mark starting tile as checked
@@ -96,6 +89,10 @@ public class MinKingDistHeuristic {
             q = tempQ;
         }
     }
+
+    /*
+     *helper method to add all neighbours of a space in our search for ownership of a space
+     */
     public Queue<LocationData> addNeighbours(Queue q, int row, int col, boolean[][] checked) {
 
         // If has l

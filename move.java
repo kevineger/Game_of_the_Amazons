@@ -21,6 +21,7 @@ public class move {
         oldRowPos = y2;
 
     }
+
     public move(int y, int x, Queen Q){
         newColPos = x;
         newRowPos= y;

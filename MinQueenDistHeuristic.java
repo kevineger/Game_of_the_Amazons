@@ -2,6 +2,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
+ * Similair to MinKingDistHeuristic except we use the movement of a queen chess piece
  * Created by Kevin on 2015-03-12.
  */
 public class MinQueenDistHeuristic {
@@ -10,21 +11,6 @@ public class MinQueenDistHeuristic {
     int ownedByUs, ownedByThem;
 
     public MinQueenDistHeuristic() {}
-
-    public MinQueenDistHeuristic(BoardLogic b) {
-        bl = b;
-        // queens <- all queens (friendly and enemy)
-        for(int i=0; i<8; i++) {
-            if(i<4) {
-                queens[i]=b.getFriendly()[i];
-            }
-            else {
-                queens[i]=b.getEnemies()[i-4];
-            }
-        }
-        ownedByUs=0;
-        ownedByThem=0;
-    }
 
     public void calculate(BoardLogic b) {
         bl = b;

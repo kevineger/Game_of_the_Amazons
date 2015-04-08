@@ -19,6 +19,7 @@ import ubco.ai.games.GameMessage;
 public class GamePlayer implements ubco.ai.games.GamePlayer {
 
     GameClient gameClient = null;
+    GameTimer timer = new GameTimer();
     BoardLogic bl;
     SearchTree T;
 
@@ -81,10 +82,10 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
     public boolean handleMessage(GameMessage gmsg) throws Exception {
         IXMLElement xml = ServerMessage.parseMessage(gmsg.msg);
         String xmlType = xml.getAttribute("type", null);
-//        System.out.println("Message Type: " + xmlType);
 
         switch (xmlType) {
             case GameMessage.ACTION_GAME_START:
+                timer.startViolationTimer();
                 System.out.println("Message Type: ACTION_GAME_START");
                 //find name and associated room number
                 String teamRole = "";
@@ -122,6 +123,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 }
                 break;
             case GameMessage.ACTION_MOVE:
+                timer.startViolationTimer();
                 boolean end2 = false;
                 System.out.println("Message Type: ACTION_MOVE");
                 IXMLElement queen2 = xml.getChildAtIndex(0);
@@ -133,15 +135,12 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 Arrow arrow3 = translateArrowIn(arrow_move2);
                 T.makeMoveOnRoot(queenMove2, arrow3);
                 frame.update(queenMove2, arrow3);
-//                System.out.println("\nEnemy's Move"+T.getRoot().B.toString());
-//                System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
                 System.out.println("Board after enemy move: ");
                 System.out.println(bl.toString());
 
                 bl.setEnemyHasMove();
                 bl.updateLegalQueenMoves();
                 end2 = bl.goalTest();
-//                System.out.println("Goal test after opponent's move: " + bl.goalTest());
                 if (end2) {
                     System.out.println();
                     System.out.println("GAME OVER");
@@ -149,14 +148,12 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                     break;
                 }
                 this.makeMove();
-//                System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
                 System.out.print("Board after our move: ");
                 System.out.println(bl.toString());
 
                 bl.setEnemyHasMove();
                 bl.updateLegalQueenMoves();
                 end2 = bl.goalTest();
-//                System.out.println("Goal test after our move: " + bl.goalTest());
                 if (end2) {
                     System.out.println();
                     System.out.println("GAME OVER");
@@ -177,6 +174,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 System.out.println("Message Type: MSG_CHAT");
                 break;
             case GameMessage.MSG_GAME:
+                timer.startViolationTimer();
                 boolean end = false;
                 System.out.println("Message Type: MSG_GAME");
                 IXMLElement queen1 = xml.getChildAtIndex(0);
@@ -188,15 +186,12 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 Arrow arrow = translateArrowIn(arrow_move1);
                 T.makeMoveOnRoot(queenMove, arrow);
                 frame.update(queenMove, arrow);
-//                System.out.println("\nEnemy's Move"+T.getRoot().B.toString());
-//                System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
                 System.out.println("Board after enemy move: ");
                 System.out.println(bl.toString());
 
                 bl.setEnemyHasMove();
                 bl.updateLegalQueenMoves();
                 end = bl.goalTest();
-//                System.out.println("Goal test after opponent's move: " + bl.goalTest());
                 if (end) {
                     System.out.println();
                     System.out.println("GAME OVER");
@@ -204,14 +199,13 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                     break;
                 }
                 this.makeMove();
-//                System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
+                System.out.println("We are gameplayer " + teamName + " and our Role is: " + role);
                 System.out.print("Board after our move: ");
                 System.out.println(bl.toString());
 
                 bl.setEnemyHasMove();
                 bl.updateLegalQueenMoves();
                 end = bl.goalTest();
-//                System.out.println("Goal test after our move: " + bl.goalTest());
                 if (end) {
                     System.out.println();
                     System.out.println("GAME OVER");
@@ -253,6 +247,11 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 //        System.out.println(roomID);
     }
 
+
+    /**
+     * method used for our player to make a move on our board
+     * and send the game message to the server
+     */
     public void makeMove(){
         SearchNode S = T.sendMoveToServer();
         move made = S.getMove();
@@ -262,7 +261,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 
         String qMove = this.translateOut(made);
         String aMove = this.translateArrowOut(arrowShot);
-
+        timer.cancel();
         this.sendToServer(GameMessage.ACTION_MOVE, roomID,qMove, aMove);
     }
 
@@ -557,7 +556,11 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
     }
 
 
-
+    /**
+     * translate arrow from gamplayer to server
+     * @param a
+     * @return
+     */
     public String translateArrowOut(Arrow a) {
 
         String oldCol = "";
@@ -617,7 +620,11 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
         return oldCol + oldRow;
     }
 
-
+    /**
+     * translate string arrow move to arrow object
+     * @param move
+     * @return
+     */
     public Arrow translateArrowIn(String move) {
 
         char x = move.charAt(0);

@@ -19,6 +19,10 @@ public class Queen extends GamePiece {
         this.rowPos =y;
     }
 
+    /**
+     * creates a copy of the queen that is not just a reference
+     * @return
+     */
     protected Queen clone() {
         Queen qNew = new Queen( rowPos, colPos, isOpponent);
         return qNew;

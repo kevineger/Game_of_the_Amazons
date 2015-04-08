@@ -15,6 +15,6 @@ public class TimeOutTask extends TimerTask {
     public void run() {
         //call static GameTimer objects because could not give run a return value
         GameTimer.violations++;
-        System.out.println("Time Violation: "+ GameTimer.violations);
+        System.out.println("Time Violations: "+ GameTimer.violations);
     }
 }

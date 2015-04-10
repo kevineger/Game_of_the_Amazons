@@ -19,7 +19,6 @@ import ubco.ai.games.GameMessage;
 public class GamePlayer implements ubco.ai.games.GamePlayer {
 
     GameClient gameClient = null;
-    GameTimer timer = new GameTimer();
     BoardLogic bl;
     SearchTree T;
 
@@ -85,7 +84,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 
         switch (xmlType) {
             case GameMessage.ACTION_GAME_START:
-                timer.startViolationTimer();
                 System.out.println("Message Type: ACTION_GAME_START");
                 //find name and associated room number
                 String teamRole = "";
@@ -123,7 +121,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 }
                 break;
             case GameMessage.ACTION_MOVE:
-                timer.startViolationTimer();
                 boolean end2 = false;
                 System.out.println("Message Type: ACTION_MOVE");
                 IXMLElement queen2 = xml.getChildAtIndex(0);
@@ -174,7 +171,6 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
                 System.out.println("Message Type: MSG_CHAT");
                 break;
             case GameMessage.MSG_GAME:
-                timer.startViolationTimer();
                 boolean end = false;
                 System.out.println("Message Type: MSG_GAME");
                 IXMLElement queen1 = xml.getChildAtIndex(0);
@@ -261,7 +257,7 @@ public class GamePlayer implements ubco.ai.games.GamePlayer {
 
         String qMove = this.translateOut(made);
         String aMove = this.translateArrowOut(arrowShot);
-        timer.cancel();
+//        timer.cancel();
         this.sendToServer(GameMessage.ACTION_MOVE, roomID,qMove, aMove);
     }
 

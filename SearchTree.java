@@ -194,11 +194,6 @@ public class SearchTree {
     }
 
     public SearchNode sendMoveToServer(){
-        /*
-        if(numMoves >= 0 && numMoves <= 28){
-            this.expandFrontier();
-        }
-        */
         this.expandFrontier();
         if(numMoves > 20 && numMoves<=40) {
             this.trimFrontier();

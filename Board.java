@@ -88,7 +88,7 @@ public class Board extends JPanel
         {
             File whiteQueenFile = new File("./images/nicExtraSmall.png");
             whiteQueen = new ImageIcon(ImageIO.read(whiteQueenFile));
-            File blackQueenFile = new File("./images/nicExtraSmallSatan.png");
+            File blackQueenFile = new File("./images/nicExtraSmallEnemy.png");
             blackQueen = new ImageIcon(ImageIO.read(blackQueenFile));
             File arrowFile = new File("./images/bees.png");
             arrowMark = new ImageIcon(ImageIO.read(arrowFile));
